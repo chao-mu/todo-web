@@ -1,0 +1,62 @@
+.page {
+  display: grid;
+  grid-template-columns: max-content repeat(7, 1fr);
+  column-gap: var(--spacing-lg);
+  row-gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+}
+
+.page h1 {
+  grid-column: 2 / -1;
+  text-align: center;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-lg);
+}
+
+.header:first-of-type {
+  grid-column: 2;
+}
+
+.header {
+  text-align: center;
+  overflow: hidden;
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-lg);
+}
+
+.header,
+.daily {
+  font-weight: var(--font-weight-bold);
+}
+
+.daily {
+  grid-column: 1;
+  align-self: center;
+  font-size: var(--font-size-lg);
+}
+
+.box {
+  --size: 45px;
+  border: 1px solid black;
+  border-radius: 50%;
+  width: var(--size);
+  height: var(--size);
+  place-self: center;
+}
+
+.addons {
+  margin-top: var(--spacing-lg);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column: 1 / -1;
+  column-gap: var(--spacing-lg);
+  row-gap: var(--spacing-md);
+}
+
+.addon {
+  font-size: var(--font-size-lg);
+  display: flex;
+  column-gap: var(--spacing-md);
+  align-items: center;
+}
