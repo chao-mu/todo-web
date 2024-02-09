@@ -2,7 +2,11 @@
 import { Fragment } from "react";
 
 // React Router
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  redirect,
+} from "react-router-dom";
 import { Link } from "react-router-dom";
 
 // React Hook Form
@@ -15,11 +19,18 @@ import { v4 as uuid } from "uuid";
 import tasksPageStyles from "./TasksPage.module.css";
 import navPageStyles from "./NavPage.module.css";
 import taskFormStyles from "./TaskForm.module.css";
+import loginPageStyles from "./LoginPage.module.css";
 
 // Ours - Data
 import daytime from "./data/daytime.json";
 import morning from "./data/morning.json";
 import oneoffs from "./data/oneoffs.json";
+
+// Ours - Firebase
+import "./firebase";
+
+// Ours - Auth
+import { isSignedIn, signIn } from "./auth";
 
 // Add IDs
 [daytime, morning, oneoffs].forEach((tasks) => {
@@ -108,18 +119,56 @@ const NavPage = () => {
   );
 };
 
+function LoginPage() {
+  const styles = loginPageStyles;
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    signIn()
+      .then(() => {
+        router.navigate("/");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  return (
+    <main className={styles["page"]}>
+      <h1>Please Login</h1>
+      <button onClick={onSubmit}>Login</button>
+    </main>
+  );
+}
+
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <NavPage />,
+    path: "/login",
+    element: <LoginPage />,
   },
   {
-    path: "/daytime",
-    element: <TasksPage title="Daytime" tasks={daytime} addons={oneoffs} />,
-  },
-  {
-    path: "/morning",
-    element: <TasksPage title="Morning" tasks={morning} />,
+    loader: () => {
+      if (!isSignedIn()) {
+        throw redirect("/login");
+      }
+
+      return null;
+    },
+    children: [
+      {
+        path: "/",
+        element: <NavPage />,
+      },
+      {
+        path: "/daytime",
+        element: <TasksPage title="Daytime" tasks={daytime} addons={oneoffs} />,
+      },
+      {
+        path: "/morning",
+        element: <TasksPage title="Morning" tasks={morning} />,
+      },
+    ],
   },
 ]);
 

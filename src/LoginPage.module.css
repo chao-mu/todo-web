@@ -1,0 +1,16 @@
+.page {
+  display: grid;
+  place-items: center;
+  place-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+}
+
+.page h1 {
+  font-size: var(--font-size-xl);
+}
+
+.page button {
+  padding: 0.25rem 0.5rem;
+  font-size: var(--font-size-md);
+}
