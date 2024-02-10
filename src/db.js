@@ -11,6 +11,13 @@ import {
 import { firebaseApp } from "./firebase";
 import { getUser } from "./auth";
 
+/**
+ * @typedef {Object} Task
+ * @property {string} title
+ * @property {string[]} contributions
+ * @property {string} goal
+ */
+
 const getDB = () => getFirestore(firebaseApp);
 
 export function addTask(task) {
