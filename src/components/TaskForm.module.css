@@ -32,9 +32,14 @@
   padding: 0.25rem;
 }
 
-.form__submit {
+.form__buttons {
   grid-column: 1 / -1;
   justify-self: end;
+  display: flex;
+  column-gap: 0.25rem;
+}
+
+.form__button {
   padding: 0.25rem 0.5rem;
 }
 

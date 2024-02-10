@@ -3,8 +3,10 @@ import {
   getFirestore,
   writeBatch,
   addDoc,
+  updateDoc,
   collection,
   getDocs,
+  doc,
 } from "firebase/firestore";
 
 // Ours
@@ -20,12 +22,20 @@ import { getUser } from "./auth";
 
 const getDB = () => getFirestore(firebaseApp);
 
-export function addTask(task) {
+export function saveTask(task) {
   const db = getDB();
   const user = getUser();
   const userId = user.uid;
 
-  return addDoc(collection(db, `users/${userId}/tasks`), task);
+  const collectionPath = ["users", userId, "tasks"];
+
+  if (task.id) {
+    const ref = doc(db, ...collectionPath, task.id);
+
+    return updateDoc(ref, task);
+  } else {
+    return addDoc(collection(db, ...collectionPath), task);
+  }
 }
 
 export function addTasks(tasks) {

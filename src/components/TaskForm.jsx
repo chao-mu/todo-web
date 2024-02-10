@@ -7,35 +7,79 @@ import { useForm } from "react-hook-form";
 // React Router
 import { useRevalidator } from "react-router-dom";
 
+// Ours - Components
+import { Popup } from "./Popup";
+
 // Ours - Styles
 import styles from "./TaskForm.module.css";
 
 // Ours - DB
-import { addTask } from "../db";
+import { saveTask } from "../db";
 
-export function TaskForm() {
+export function NewTaskPopupButton({ task }) {
+  const [showEdit, setShowEdit] = useState(false);
+  return (
+    <>
+      <button
+        className={styles["new-task-button"]}
+        onClick={() => setShowEdit(true)}
+      >
+        New Task
+      </button>
+      <Popup show={showEdit} setShow={setShowEdit}>
+        <TaskForm
+          task={task}
+          onSuccess={() => setShowEdit(false)}
+          onCancel={() => setShowEdit(false)}
+        />
+      </Popup>
+    </>
+  );
+}
+
+export function TaskForm({ task, onCancel, onSuccess }) {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      title: task?.title || "",
+      goal: task?.goal || "",
+      contributions: (task?.contributions || []).join("\n"),
+    },
+  });
+
   const { revalidate } = useRevalidator();
+
+  const cancel = () => {
+    reset();
+    setError("");
+    if (onCancel) {
+      onCancel();
+    }
+  };
 
   const onSubmit = async ({ contributions, title, goal }, e) => {
     e.preventDefault();
 
     setLoading(true);
 
-    await addTask({
+    await saveTask({
+      ...task,
       title,
       goal,
       contributions: contributions.split("\n").map((line) => line.trim()),
     })
       .then(() => {
         revalidate();
+        if (onSuccess) {
+          onSuccess();
+        }
       })
       .catch((reason) => setError(reason.message));
 
@@ -76,9 +120,18 @@ export function TaskForm() {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <button type="submit" className={styles["form__submit"]}>
-          Add
-        </button>
+        <div className={styles["form__buttons"]}>
+          <button
+            type="reset"
+            onClick={() => cancel()}
+            className={styles["form__button"]}
+          >
+            Cancel
+          </button>
+          <button type="submit" className={styles["form__button"]}>
+            Save
+          </button>
+        </div>
       )}
     </form>
   );
