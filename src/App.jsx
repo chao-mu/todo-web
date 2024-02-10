@@ -23,6 +23,7 @@ import homePageStyles from "./HomePage.module.css";
 import taskFormStyles from "./TaskForm.module.css";
 import loginPageStyles from "./LoginPage.module.css";
 import tasksListStyles from "./TasksList.module.css";
+import bulkTaskUploadFormStyles from "./BulkTaskUploadForm.module.css";
 
 // Ours - Data
 import daytime from "./data/daytime.json";
@@ -36,7 +37,7 @@ import "./firebase";
 import { isSignedIn, signIn } from "./auth";
 
 // Ours - Persistance
-import { getTasks, addTask } from "./db";
+import { addTasks, getTasks, addTask, validateTask } from "./db";
 
 // Add IDs
 [daytime, morning, oneoffs].forEach((tasks) => {
@@ -89,6 +90,88 @@ const TasksPage = ({ title, tasks, addons }) => {
         </div>
       )}
     </main>
+  );
+};
+
+const BulkTaskUploadForm = () => {
+  const styles = bulkTaskUploadFormStyles;
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
+  const [tasks, setTasks] = useState(null);
+
+  const uploadTasks = async () => {
+    setLoading(true);
+    await addTasks(tasks)
+      .then(() => {
+        setTasks([]);
+      })
+      .catch((reason) => setError(reason.message));
+    setLoading(false);
+  };
+
+  const parseFile = (e) => {
+    e.preventDefault();
+    const files = e.target.files;
+    if (!files || files.length === 0) {
+      return;
+    }
+    const file = files.item(0);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setTasks(null);
+      setError(null);
+
+      let tasks;
+      try {
+        tasks = JSON.parse(reader.result);
+      } catch (error) {
+        setError(error.message);
+        return;
+      }
+      for (const [index, task] of tasks.entries()) {
+        const errors = validateTask(task);
+        if (errors.size > 0) {
+          let errorMsg = `Error at index ${index}: `;
+          for (const value of errors.values()) {
+            errorMsg += `${value}, `;
+          }
+
+          setError(errorMsg);
+          return;
+        }
+      }
+
+      setTasks(tasks);
+    };
+
+    reader.readAsText(file);
+  };
+
+  return (
+    <section className={styles["form"]}>
+      <input
+        className={styles["form__file"]}
+        type="file"
+        onChange={parseFile}
+      />
+      <div className={styles["form__task-count"]}>
+        {tasks && <span>Tasks: {tasks.length}</span>}
+      </div>
+      <p className={styles["form__root-error"]}>{error}</p>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <button
+          disabled={!tasks}
+          type="submit"
+          className={styles["form__submit"]}
+          onClick={uploadTasks}
+        >
+          Upload
+        </button>
+      )}
+    </section>
   );
 };
 
@@ -191,9 +274,19 @@ function TasksList({ tasks }) {
 }
 
 const HomePage = () => {
+  const allGoal = "All";
   const styles = homePageStyles;
 
+  const [selectedGoal, setSelectedGoal] = useState(allGoal);
+
   const appData = useAppData();
+
+  const goals = new Set();
+  for (const task of appData.tasks) {
+    goals.add(task.goal);
+  }
+
+  goals.add(allGoal);
 
   return (
     <main className={styles["page"]}>
@@ -201,10 +294,24 @@ const HomePage = () => {
         <Link to="/daytime">Daytime</Link>
         <Link to="/morning">Morning</Link>
       </nav>
+      <div className={styles["goals"]}>
+        {Array.from(goals).map((goal) => (
+          <button
+            data-is-selected={goal == selectedGoal}
+            className={styles["goals__button"]}
+            key={goal}
+            onClick={() => setSelectedGoal(goal)}
+          >
+            {goal}
+          </button>
+        ))}
+      </div>
+
       <TaskForm onSubmit={(data) => console.log(data)} />
       <section className={styles["tasks"]}>
         <TasksList tasks={appData.tasks} />
       </section>
+      <BulkTaskUploadForm />
     </main>
   );
 };
