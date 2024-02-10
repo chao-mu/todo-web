@@ -277,8 +277,6 @@ const HomePage = () => {
   const allGoal = "All";
   const styles = homePageStyles;
 
-  const [selectedGoal, setSelectedGoal] = useState(allGoal);
-
   const appData = useAppData();
 
   const goals = new Set();
@@ -286,7 +284,36 @@ const HomePage = () => {
     goals.add(task.goal);
   }
 
-  goals.add(allGoal);
+  const [selectedGoals, setSelectedGoals] = useState({
+    [allGoal]: true,
+    ...Object.fromEntries(Array.from(goals).map((goal) => [goal, false])),
+  });
+
+  const displayedGoals = [allGoal, ...Array.from(goals).sort()];
+
+  const onGoalFilterChange = (goal, checked) => {
+    if (goal === allGoal && checked) {
+      setSelectedGoals({
+        [goal]: true,
+        ...Object.fromEntries(Object.keys(goals).map((key) => [key, false])),
+      });
+
+      return;
+    }
+
+    setSelectedGoals((prev) => ({
+      ...prev,
+      [goal]: checked,
+    }));
+  };
+
+  const tasks = appData.tasks.filter((task) => {
+    if (selectedGoals[allGoal]) {
+      return true;
+    }
+
+    return selectedGoals[task.goal];
+  });
 
   return (
     <main className={styles["page"]}>
@@ -294,22 +321,22 @@ const HomePage = () => {
         <Link to="/daytime">Daytime</Link>
         <Link to="/morning">Morning</Link>
       </nav>
+      <TaskForm />
       <div className={styles["goals"]}>
-        {Array.from(goals).map((goal) => (
-          <button
-            data-is-selected={goal == selectedGoal}
-            className={styles["goals__button"]}
-            key={goal}
-            onClick={() => setSelectedGoal(goal)}
-          >
+        {displayedGoals.map((goal) => (
+          <label htmlFor={goal} key={goal} className={styles["goals__filter"]}>
+            <input
+              type="checkbox"
+              id={goal}
+              onChange={(e) => onGoalFilterChange(goal, e.target.checked)}
+              checked={selectedGoals[goal]}
+            />
             {goal}
-          </button>
+          </label>
         ))}
       </div>
-
-      <TaskForm onSubmit={(data) => console.log(data)} />
       <section className={styles["tasks"]}>
-        <TasksList tasks={appData.tasks} />
+        <TasksList tasks={tasks} />
       </section>
       <BulkTaskUploadForm />
     </main>
