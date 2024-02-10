@@ -10,3 +10,8 @@ export function isSignedIn() {
   const auth = getAuth();
   return auth.currentUser !== null;
 }
+
+export function getUser() {
+  const auth = getAuth();
+  return auth.currentUser;
+}

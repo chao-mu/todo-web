@@ -1,9 +1,10 @@
 .page {
-  display: grid;
-  place-items: center;
-  place-content: center;
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   gap: var(--spacing-lg);
+  align-items: center;
+  padding: var(--spacing-lg);
 }
 
 .page h1 {
@@ -13,4 +14,9 @@
 .page nav {
   display: flex;
   gap: var(--spacing-md);
+}
+
+.tasks {
+  max-width: 900px;
+  width: 100%;
 }

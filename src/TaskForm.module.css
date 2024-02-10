@@ -1,13 +1,29 @@
 .form {
+  --error-color: #f00;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.25rem;
 }
 
-.form__goal,
-.form__title {
+.form__title,
+.form__goal {
   grid-row: 1;
   padding: 0.25rem;
+}
+
+.form__error {
+  color: var(--error-color);
+  margin-bottom: 1rem;
+}
+
+.form__error[for="title"] {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.form__error[for="goal"] {
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .form__contributions {
@@ -20,4 +36,9 @@
   grid-column: 1 / -1;
   justify-self: end;
   padding: 0.25rem 0.5rem;
+}
+
+.form__root-error {
+  grid-column: 1 / -1;
+  color: var(--error-color);
 }
