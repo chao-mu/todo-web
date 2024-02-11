@@ -1,0 +1,8 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  gap: var(--spacing-lg);
+  align-items: center;
+  padding: var(--spacing-lg);
+}

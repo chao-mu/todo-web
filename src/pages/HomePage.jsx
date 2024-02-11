@@ -78,7 +78,7 @@ export function HomePage() {
   ).length;
 
   return (
-    <main className={styles["page"]}>
+    <>
       <TaskForm />
       <Progress current={completed} total={total} />
       <div className={styles["goals"]}>
@@ -100,6 +100,6 @@ export function HomePage() {
       <section className={styles["tasks"]}>
         <TasksList tasks={tasks} />
       </section>
-    </main>
+    </>
   );
 }

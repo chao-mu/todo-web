@@ -7,9 +7,12 @@ import { isSignedIn } from "./auth";
 // Ours - DB
 import { getTasks } from "./db";
 
-// Pages
+// Ours - Pages
 import { LoginPage } from "./pages/LoginPage";
 import { HomePage } from "./pages/HomePage";
+
+// Ours - Layout
+import { UserLayout } from "./pages/UserLayout";
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +20,9 @@ export const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
+    path: "/",
+    element: <UserLayout />,
+    id: "root",
     loader: async () => {
       if (!isSignedIn()) {
         throw redirect("/login");
@@ -28,10 +34,9 @@ export const router = createBrowserRouter([
 
       return appData;
     },
-    id: "root",
     children: [
       {
-        path: "/",
+        index: true,
         element: <HomePage />,
       },
     ],
