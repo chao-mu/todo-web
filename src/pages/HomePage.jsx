@@ -60,10 +60,6 @@ export function HomePage() {
 
   return (
     <main className={styles["page"]}>
-      <nav>
-        <Link to="/daytime">Daytime</Link>
-        <Link to="/morning">Morning</Link>
-      </nav>
       <TaskForm />
       <div className={styles["goals"]}>
         {displayedGoals.map((goal) => (
@@ -81,7 +77,6 @@ export function HomePage() {
       <section className={styles["tasks"]}>
         <TasksList tasks={tasks} />
       </section>
-      <BulkTaskUploadForm />
     </main>
   );
 }

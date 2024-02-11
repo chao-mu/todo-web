@@ -7,25 +7,9 @@ import { isSignedIn } from "./auth";
 // Ours - DB
 import { getTasks } from "./db";
 
-// uuid
-import { v4 as uuid } from "uuid";
-
 // Pages
 import { LoginPage } from "./pages/LoginPage";
 import { HomePage } from "./pages/HomePage";
-import { TasksPage } from "./pages/TasksPage";
-
-// Ours - Data
-import daytime from "./data/daytime.json";
-import morning from "./data/morning.json";
-import oneoffs from "./data/oneoffs.json";
-
-// Add IDs
-[daytime, morning, oneoffs].forEach((tasks) => {
-  tasks.forEach((task) => {
-    task.id = uuid();
-  });
-});
 
 export const router = createBrowserRouter([
   {
@@ -49,14 +33,6 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <HomePage />,
-      },
-      {
-        path: "/daytime",
-        element: <TasksPage title="Daytime" tasks={daytime} addons={oneoffs} />,
-      },
-      {
-        path: "/morning",
-        element: <TasksPage title="Morning" tasks={morning} />,
       },
     ],
   },
