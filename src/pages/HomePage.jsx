@@ -4,12 +4,16 @@ import { useState } from "react";
 // Ours - Components
 import { TaskForm } from "../components/TaskForm";
 import { TasksList } from "../components/TasksList";
+import { Progress } from "../components/Progress";
 
 // Ours - Hooks
 import { useAppData } from "../hooks";
 
 // Ours - Styles
 import styles from "./HomePage.module.css";
+
+// Ours - DB
+import { TaskStatus } from "../db";
 
 export function HomePage() {
   const allGoal = "All";
@@ -49,9 +53,16 @@ export function HomePage() {
 
   tasks = tasks.filter((task) => selectedGoals.includes(task.goal));
 
+  const total = tasks.length;
+
+  const completed = tasks.filter(
+    (task) => task.status === TaskStatus.COMPLETED
+  ).length;
+
   return (
     <main className={styles["page"]}>
       <TaskForm />
+      <Progress current={completed} total={total} />
       <div className={styles["goals"]}>
         {goals.map((goal) => (
           <label htmlFor={goal} key={goal} className={styles["goals__filter"]}>
