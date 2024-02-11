@@ -9,7 +9,7 @@ import { TaskForm } from "../components/TaskForm";
 import { TasksList } from "../components/TasksList";
 import { BulkTaskUploadForm } from "../components/BulkTaskUploadForm";
 
-// Ours - hooks
+// Ours - Hooks
 import { useAppData } from "../hooks";
 
 // Ours - Styles
@@ -20,8 +20,10 @@ export function HomePage() {
 
   const appData = useAppData();
 
+  let tasks = appData.tasks.filter(({ deleted }) => !deleted);
+
   const goals = new Set();
-  for (const task of appData.tasks) {
+  for (const task of tasks) {
     goals.add(task.goal);
   }
 
@@ -48,7 +50,7 @@ export function HomePage() {
     }));
   };
 
-  const tasks = appData.tasks.filter((task) => {
+  tasks = tasks.filter((task) => {
     if (selectedGoals[allGoal]) {
       return true;
     }

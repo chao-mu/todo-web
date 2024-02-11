@@ -1,15 +1,38 @@
 // React
 import { useState } from "react";
 
+// React Router
+import { useRevalidator } from "react-router-dom";
+
 // Ours - Components
 import { Popup } from "./Popup";
 import { TaskForm } from "./TaskForm";
+
+// Ours - DB
+import { deleteTask } from "../db";
 
 // Ours - Styles
 import styles from "./Task.module.css";
 
 export function Task({ task }) {
   const [showEdit, setShowEdit] = useState(false);
+  const { revalidate } = useRevalidator();
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
+
+  const onDelete = async () => {
+    setLoading(true);
+
+    await deleteTask(task)
+      .catch((reason) => {
+        setError(`Error deleting task: ${reason.message}`);
+      })
+      .then(() => {
+        revalidate();
+      });
+
+    setLoading(false);
+  };
 
   return (
     <section className={styles["task"]}>
@@ -23,13 +46,26 @@ export function Task({ task }) {
         ))}
       </div>
       <div className={styles["action-bar"]}>
-        <button
-          className={styles["action-bar__button"]}
-          onClick={() => setShowEdit(true)}
-        >
-          Edit
-        </button>
+        {loading ? (
+          "Loading..."
+        ) : (
+          <>
+            <button
+              className={styles["action-bar__button"]}
+              onClick={() => setShowEdit(true)}
+            >
+              Edit
+            </button>
+            <button
+              className={styles["action-bar__button"]}
+              onClick={() => onDelete()}
+            >
+              Delete
+            </button>
+          </>
+        )}
       </div>
+      <div className={styles["error"]}>{error}</div>
       <Popup show={showEdit} setShow={setShowEdit}>
         <TaskForm
           task={task}

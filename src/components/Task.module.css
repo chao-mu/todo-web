@@ -42,3 +42,8 @@
   align-items: center;
   margin-left: 1rem;
 }
+
+.error {
+  color: #f00;
+  margin-top: 0.5rem;
+}

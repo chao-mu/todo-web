@@ -22,12 +22,14 @@ import { getUser } from "./auth";
 
 const getDB = () => getFirestore(firebaseApp);
 
+const taskCollectionPath = ({ userId }) => ["users", userId, "tasks"];
+
 export function saveTask(task) {
   const db = getDB();
   const user = getUser();
   const userId = user.uid;
 
-  const collectionPath = ["users", userId, "tasks"];
+  const collectionPath = taskCollectionPath({ userId });
 
   if (task.id) {
     const ref = doc(db, ...collectionPath, task.id);
@@ -38,6 +40,16 @@ export function saveTask(task) {
   }
 }
 
+export function deleteTask({ id }) {
+  const db = getDB();
+  const user = getUser();
+  const userId = user.uid;
+
+  const ref = doc(db, ...taskCollectionPath({ userId }), id);
+
+  return updateDoc(ref, { deleted: true });
+}
+
 export function addTasks(tasks) {
   const db = getDB();
   const user = getUser();
@@ -46,8 +58,7 @@ export function addTasks(tasks) {
   const batch = writeBatch(db);
 
   tasks.forEach((task) => {
-    const ref = collection(db, `users/${userId}/tasks`);
-    addDoc(ref, task);
+    addDoc(taskCollectionPath({ userId }), task);
   });
 
   return batch.commit();
@@ -79,7 +90,8 @@ export async function getTasks() {
   const user = getUser();
   const userId = user.uid;
 
-  const snapshot = await getDocs(collection(db, `users/${userId}/tasks`));
+  const taskCollection = collection(db, ...taskCollectionPath({ userId }));
+  const snapshot = await getDocs(taskCollection);
 
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 }
