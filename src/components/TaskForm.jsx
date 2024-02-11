@@ -94,6 +94,8 @@ export function TaskForm({ task, onCancel, onSuccess }) {
         if (onSuccess) {
           onSuccess();
         }
+
+        reset();
       })
       .catch((reason) => setError(reason.message));
 
