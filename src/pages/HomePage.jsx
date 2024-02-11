@@ -1,5 +1,5 @@
 // React
-import { useState } from "react";
+import { useId, useState } from "react";
 
 // Ours - Components
 import { TaskForm } from "../components/TaskForm";
@@ -15,10 +15,23 @@ import styles from "./HomePage.module.css";
 // Ours - DB
 import { TaskStatus } from "../db";
 
-export function HomePage() {
-  const allGoal = "All";
+function GoalFilter({ goal, checked, onChange }) {
+  return (
+    <label htmlFor={goal} className={styles["goals__filter"]}>
+      <input
+        type="checkbox"
+        id={goal}
+        checked={checked}
+        onChange={(e) => onChange(goal, e.target.checked)}
+      />
+      {goal}
+    </label>
+  );
+}
 
+export function HomePage() {
   const appData = useAppData();
+  const allGoalKey = useId();
 
   let tasks = appData.tasks.filter(({ deleted }) => !deleted);
 
@@ -27,19 +40,24 @@ export function HomePage() {
     goalsSet.add(task.goal);
   }
 
-  const goals = [allGoal, ...Array.from(goalsSet).sort()];
+  const goals = Array.from(goalsSet).sort();
 
-  const [selectedGoals, setSelectedGoals] = useState([allGoal]);
+  const [allGoalChecked, setAllGoalChecked] = useState(true);
+  const [selectedGoals, setSelectedGoals] = useState(goals);
+
+  const onAllGoalChange = (_, checked) => {
+    if (checked) {
+      setSelectedGoals(goals);
+    } else if (selectedGoals.length === goals.length) {
+      setSelectedGoals([]);
+    }
+
+    setAllGoalChecked(checked);
+  };
 
   const onGoalFilterChange = (goal, checked) => {
-    if (goal === allGoal) {
-      if (checked) {
-        setSelectedGoals(goals);
-      } else if (selectedGoals.length === goals.length) {
-        setSelectedGoals([]);
-      }
-
-      return;
+    if (allGoalChecked && !checked) {
+      setAllGoalChecked(false);
     }
 
     setSelectedGoals((prev) => {
@@ -47,7 +65,7 @@ export function HomePage() {
         return [...prev, goal];
       }
 
-      return prev.filter((g) => g !== goal && g !== allGoal);
+      return prev.filter((g) => g !== goal);
     });
   };
 
@@ -64,16 +82,19 @@ export function HomePage() {
       <TaskForm />
       <Progress current={completed} total={total} />
       <div className={styles["goals"]}>
+        <GoalFilter
+          key={allGoalKey}
+          goal="All"
+          checked={allGoalChecked}
+          onChange={onAllGoalChange}
+        />
         {goals.map((goal) => (
-          <label htmlFor={goal} key={goal} className={styles["goals__filter"]}>
-            <input
-              type="checkbox"
-              id={goal}
-              onChange={(e) => onGoalFilterChange(goal, e.target.checked)}
-              checked={selectedGoals.includes(goal)}
-            />
-            {goal}
-          </label>
+          <GoalFilter
+            key={goal}
+            goal={goal}
+            checked={selectedGoals.includes(goal)}
+            onChange={onGoalFilterChange}
+          />
         ))}
       </div>
       <section className={styles["tasks"]}>
