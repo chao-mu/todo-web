@@ -34,13 +34,18 @@
 
 .goal__contributions {
   margin-bottom: 0.5rem;
+  margin-left: 1.5rem;
+  list-style-position: inside;
+}
+
+.task__steps {
+  list-style-position: inside;
 }
 
 .goal__contribution {
   display: flex;
   column-gap: 0.5rem;
   align-items: center;
-  margin-left: 1rem;
 }
 
 .error {

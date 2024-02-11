@@ -26,6 +26,7 @@
   grid-row: 2;
 }
 
+.form__steps,
 .form__contributions {
   grid-column: 1 / -1;
   height: 10rem;

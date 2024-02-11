@@ -38,13 +38,20 @@ export function Task({ task }) {
     <section className={styles["task"]}>
       <div className={styles["task__title"]}>{task.title}</div>
       <div className={styles["goal__title"]}>{task.goal}</div>
-      <div className={styles["goal__contributions"]}>
+      <ul className={styles["goal__contributions"]}>
         {task.contributions.map((contribution, idx) => (
-          <div key={idx} className={styles["goal__contribution"]}>
+          <li key={idx} className={styles["goal__contribution"]}>
             {contribution}
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
+      <ol className={styles["task__steps"]}>
+        {task.steps?.map((step, idx) => (
+          <li key={idx} className={styles["task__step"]}>
+            {step}
+          </li>
+        ))}
+      </ol>
       <div className={styles["action-bar"]}>
         {loading ? (
           "Loading..."

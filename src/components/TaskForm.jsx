@@ -18,6 +18,7 @@ import { saveTask } from "../db";
 
 export function NewTaskPopupButton({ task }) {
   const [showEdit, setShowEdit] = useState(false);
+
   return (
     <>
       <button
@@ -51,6 +52,7 @@ export function TaskForm({ task, onCancel, onSuccess }) {
       title: task?.title || "",
       goal: task?.goal || "",
       contributions: (task?.contributions || []).join("\n"),
+      steps: (task?.steps || []).join("\n"),
     },
   });
 
@@ -64,7 +66,7 @@ export function TaskForm({ task, onCancel, onSuccess }) {
     }
   };
 
-  const onSubmit = async ({ contributions, title, goal }, e) => {
+  const onSubmit = async ({ contributions, steps, title, goal }, e) => {
     e.preventDefault();
 
     setLoading(true);
@@ -74,6 +76,7 @@ export function TaskForm({ task, onCancel, onSuccess }) {
       title,
       goal,
       contributions: contributions.split("\n").map((line) => line.trim()),
+      steps: steps.split("\n").map((line) => line.trim()),
     })
       .then(() => {
         revalidate();
@@ -115,6 +118,11 @@ export function TaskForm({ task, onCancel, onSuccess }) {
         placeholder="Contributions"
         {...register("contributions")}
         className={styles["form__contributions"]}
+      />
+      <textarea
+        placeholder="Steps"
+        {...register("steps")}
+        className={styles["form__steps"]}
       />
       <p className={styles["form__root-error"]}>{error}</p>
       {loading ? (

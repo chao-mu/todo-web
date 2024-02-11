@@ -25,7 +25,7 @@ export function HomePage() {
 
   const goals = [allGoal, ...Array.from(goalsSet).sort()];
 
-  const [selectedGoals, setSelectedGoals] = useState([]);
+  const [selectedGoals, setSelectedGoals] = useState([allGoal]);
 
   const onGoalFilterChange = (goal, checked) => {
     if (goal === allGoal) {
