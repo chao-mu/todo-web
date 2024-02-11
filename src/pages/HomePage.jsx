@@ -18,53 +18,48 @@ export function HomePage() {
 
   let tasks = appData.tasks.filter(({ deleted }) => !deleted);
 
-  const goals = new Set();
+  const goalsSet = new Set();
   for (const task of tasks) {
-    goals.add(task.goal);
+    goalsSet.add(task.goal);
   }
 
-  const [selectedGoals, setSelectedGoals] = useState({
-    [allGoal]: true,
-    ...Object.fromEntries(Array.from(goals).map((goal) => [goal, false])),
-  });
+  const goals = [allGoal, ...Array.from(goalsSet).sort()];
 
-  const displayedGoals = [allGoal, ...Array.from(goals).sort()];
+  const [selectedGoals, setSelectedGoals] = useState([]);
 
   const onGoalFilterChange = (goal, checked) => {
-    if (goal === allGoal && checked) {
-      setSelectedGoals({
-        [goal]: true,
-        ...Object.fromEntries(Object.keys(goals).map((key) => [key, false])),
-      });
+    if (goal === allGoal) {
+      if (checked) {
+        setSelectedGoals(goals);
+      } else if (selectedGoals.length === goals.length) {
+        setSelectedGoals([]);
+      }
 
       return;
     }
 
-    setSelectedGoals((prev) => ({
-      ...prev,
-      [goal]: checked,
-    }));
+    setSelectedGoals((prev) => {
+      if (checked) {
+        return [...prev, goal];
+      }
+
+      return prev.filter((g) => g !== goal && g !== allGoal);
+    });
   };
 
-  tasks = tasks.filter((task) => {
-    if (selectedGoals[allGoal]) {
-      return true;
-    }
-
-    return selectedGoals[task.goal];
-  });
+  tasks = tasks.filter((task) => selectedGoals.includes(task.goal));
 
   return (
     <main className={styles["page"]}>
       <TaskForm />
       <div className={styles["goals"]}>
-        {displayedGoals.map((goal) => (
+        {goals.map((goal) => (
           <label htmlFor={goal} key={goal} className={styles["goals__filter"]}>
             <input
               type="checkbox"
               id={goal}
               onChange={(e) => onGoalFilterChange(goal, e.target.checked)}
-              checked={selectedGoals[goal]}
+              checked={selectedGoals.includes(goal)}
             />
             {goal}
           </label>
