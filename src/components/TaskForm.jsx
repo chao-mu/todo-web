@@ -38,6 +38,17 @@ export function NewTaskPopupButton({ task }) {
   );
 }
 
+function arrayFromText(text) {
+  if (!text) {
+    return [];
+  }
+
+  return text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line);
+}
+
 export function TaskForm({ task, onCancel, onSuccess }) {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
@@ -75,8 +86,8 @@ export function TaskForm({ task, onCancel, onSuccess }) {
       ...task,
       title,
       goal,
-      contributions: contributions.split("\n").map((line) => line.trim()),
-      steps: steps.split("\n").map((line) => line.trim()),
+      contributions: arrayFromText(contributions),
+      steps: arrayFromText(steps),
     })
       .then(() => {
         revalidate();
