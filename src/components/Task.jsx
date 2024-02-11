@@ -9,7 +9,7 @@ import { Popup } from "./Popup";
 import { TaskForm } from "./TaskForm";
 
 // Ours - DB
-import { deleteTask } from "../db";
+import { deleteTask, updateTask, TaskStatus } from "../db";
 
 // Ours - Styles
 import styles from "./Task.module.css";
@@ -20,12 +20,12 @@ export function Task({ task }) {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
 
-  const onDelete = async () => {
+  const callWrapper = (action, fn) => async () => {
     setLoading(true);
 
-    await deleteTask(task)
+    await fn()
       .catch((reason) => {
-        setError(`Error deleting task: ${reason.message}`);
+        setError(`Error ${action}: ${reason.message}`);
       })
       .then(() => {
         revalidate();
@@ -34,9 +34,16 @@ export function Task({ task }) {
     setLoading(false);
   };
 
+  const onDelete = callWrapper("deleting task", () => deleteTask(task));
+  const markComplete = callWrapper("marking task completed", () =>
+    updateTask(task.id, { status: TaskStatus.COMPLETED })
+  );
+
   return (
     <section className={styles["task"]}>
-      <div className={styles["task__title"]}>{task.title}</div>
+      <div data-task-status={task.status} className={styles["task__title"]}>
+        {task.title}
+      </div>
       <div className={styles["goal__title"]}>{task.goal}</div>
       <ul className={styles["goal__contributions"]}>
         {task.contributions.map((contribution, idx) => (
@@ -57,6 +64,12 @@ export function Task({ task }) {
           "Loading..."
         ) : (
           <>
+            <button
+              className={styles["action-bar__button"]}
+              onClick={() => markComplete()}
+            >
+              Mark Complete
+            </button>
             <button
               className={styles["action-bar__button"]}
               onClick={() => setShowEdit(true)}

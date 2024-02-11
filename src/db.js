@@ -24,6 +24,15 @@ const getDB = () => getFirestore(firebaseApp);
 
 const taskCollectionPath = ({ userId }) => ["users", userId, "tasks"];
 
+export function updateTask(id, values) {
+  const db = getDB();
+  const user = getUser();
+  const userId = user.uid;
+
+  const ref = doc(db, ...taskCollectionPath({ userId }), id);
+
+  return updateDoc(ref, values);
+}
 export function saveTask(task) {
   const db = getDB();
   const user = getUser();
@@ -32,13 +41,16 @@ export function saveTask(task) {
   const collectionPath = taskCollectionPath({ userId });
 
   if (task.id) {
-    const ref = doc(db, ...collectionPath, task.id);
-
-    return updateDoc(ref, task);
+    return updateTask(task.id, task);
   } else {
     return addDoc(collection(db, ...collectionPath), task);
   }
 }
+
+export const TaskStatus = {
+  PENDING: "pending",
+  COMPLETED: "completed",
+};
 
 export function deleteTask({ id }) {
   const db = getDB();

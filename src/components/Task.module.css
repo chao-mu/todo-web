@@ -7,6 +7,10 @@
   border-radius: 0.5rem;
 }
 
+.task__title[data-task-status="completed"] {
+  text-decoration: line-through;
+}
+
 .task__title {
   font-size: 1.5rem;
   font-weight: bold;
