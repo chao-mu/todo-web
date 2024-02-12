@@ -58,6 +58,8 @@ export default function Page() {
   const onGoalFilterChange = (goal, checked) => {
     if (allGoalChecked && !checked) {
       setAllGoalChecked(false);
+    } else if (checked && selectedGoals.length === goals.length - 1) {
+      setAllGoalChecked(true);
     }
 
     setSelectedGoals((prev) => {
