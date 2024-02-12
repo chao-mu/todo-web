@@ -1,10 +1,23 @@
+// React
 import React from "react";
+
+// React DOM
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
+
+// Ours - Styles
 import "./index.css";
+
+// Ours - Firebase
+import "./firebase";
+
+// Ours - Router
+import { router } from "./router";
+
+// React Router
+import { RouterProvider } from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />;
   </React.StrictMode>
 );
