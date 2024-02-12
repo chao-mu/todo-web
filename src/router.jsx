@@ -8,11 +8,11 @@ import { isSignedIn } from "./auth";
 import { getTasks } from "./db";
 
 // Ours - Pages
-import { LoginPage } from "./pages/LoginPage";
-import { HomePage } from "./pages/HomePage";
+import LoginPage from "@/app/login/page";
+import HomePage from "@/app/page";
 
 // Ours - Layout
-import { UserLayout } from "./pages/UserLayout";
+import UserLayout from "@/app/layout";
 
 export const router = createBrowserRouter([
   {

@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 // Ours - DB
-import { addTasks, validateTask } from "../db";
+import { addTasks, validateTask } from "@/db";
 
 // Ours - Styles
 import styles from "./BulkTaskUploadForm.module.css";

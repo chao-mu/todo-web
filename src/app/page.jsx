@@ -2,18 +2,18 @@
 import { useId, useState } from "react";
 
 // Ours - Components
-import { TaskForm } from "../components/TaskForm";
-import { TasksList } from "../components/TasksList";
-import { Progress } from "../components/Progress";
+import { TaskForm } from "@/components/TaskForm";
+import { TasksList } from "@/components/TasksList";
+import { Progress } from "@/components/Progress";
 
 // Ours - Hooks
-import { useAppData } from "../hooks";
+import { useAppData } from "@/hooks";
 
 // Ours - Styles
-import styles from "./HomePage.module.css";
+import styles from "./page.module.css";
 
 // Ours - DB
-import { TaskStatus } from "../db";
+import { TaskStatus } from "@/db";
 
 function GoalFilter({ goal, checked, onChange }) {
   return (
@@ -29,7 +29,7 @@ function GoalFilter({ goal, checked, onChange }) {
   );
 }
 
-export function HomePage() {
+export default function Page() {
   const appData = useAppData();
   const allGoalKey = useId();
 

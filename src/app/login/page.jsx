@@ -2,12 +2,12 @@
 import { useNavigate } from "react-router";
 
 // Ours - Auth
-import { signIn } from "../auth";
+import { signIn } from "@/auth";
 
 // Ours - Styles
-import styles from "./LoginPage.module.css";
+import styles from "./page.module.css";
 
-export function LoginPage() {
+export default function Page() {
   const navigate = useNavigate();
 
   const onSubmit = (e) => {

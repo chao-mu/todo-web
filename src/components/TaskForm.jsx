@@ -14,7 +14,7 @@ import { Popup } from "./Popup";
 import styles from "./TaskForm.module.css";
 
 // Ours - DB
-import { saveTask } from "../db";
+import { saveTask } from "@/db";
 
 export function NewTaskPopupButton({ task }) {
   const [showEdit, setShowEdit] = useState(false);

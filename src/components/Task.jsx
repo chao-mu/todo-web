@@ -9,7 +9,7 @@ import { Popup } from "./Popup";
 import { TaskForm } from "./TaskForm";
 
 // Ours - DB
-import { deleteTask, updateTask, TaskStatus } from "../db";
+import { deleteTask, updateTask, TaskStatus } from "@/db";
 
 // Ours - Styles
 import styles from "./Task.module.css";
@@ -68,7 +68,7 @@ export function Task({ task }) {
               className={styles["action-bar__button"]}
               onClick={() => markComplete()}
             >
-              Mark Complete
+              Complete
             </button>
             <button
               className={styles["action-bar__button"]}
