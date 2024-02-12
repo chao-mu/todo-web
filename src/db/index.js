@@ -10,8 +10,8 @@ import {
 } from "firebase/firestore";
 
 // Ours
-import { firebaseApp } from "./firebase";
-import { getUser } from "./auth";
+import { firebaseApp } from "@/firebase";
+import { getUser } from "@/auth";
 
 /**
  * @typedef {Object} Task
