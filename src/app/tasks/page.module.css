@@ -1,0 +1,25 @@
+.page h1 {
+  font-size: var(--font-size-xl);
+}
+
+.page nav {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.goals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+}
+
+.goals__filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.goals__filter input[type="checkbox"] {
+  transform: scale(1.5);
+}

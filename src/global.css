@@ -35,3 +35,8 @@ body {
   font-family: "Roboto", sans-serif;
   font-size: var(--font-size-md);
 }
+
+#root {
+  display: flex;
+  flex-direction: column;
+}

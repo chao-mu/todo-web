@@ -5,7 +5,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 // Ours - Styles
-import "./index.css";
+import "./global.css";
 
 // Ours - Firebase
 import "./firebase";

@@ -10,6 +10,8 @@ import { getTasks } from "./db";
 // Ours - Pages
 import LoginPage from "@/app/login/page";
 import HomePage from "@/app/page";
+import TasksPage from "@/app/tasks/page";
+import NewTaskPage from "@/app/tasks/new/page";
 
 // Ours - Layout
 import UserLayout from "@/app/layout";
@@ -38,6 +40,14 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: "tasks",
+        element: <TasksPage />,
+      },
+      {
+        path: "tasks/new",
+        element: <NewTaskPage />,
       },
     ],
   },
