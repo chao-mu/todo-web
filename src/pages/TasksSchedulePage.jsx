@@ -2,11 +2,11 @@
 import { Fragment } from "react";
 
 // Ours - Styles
-import styles from "./TasksPage.module.css";
+import styles from "./TasksSchedulePage.module.css";
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-export function TasksPage({ title, tasks, addons }) {
+export function TasksSchedulePage({ title, tasks, addons }) {
   return (
     <main className={styles["page"]}>
       <h1>{title}</h1>
