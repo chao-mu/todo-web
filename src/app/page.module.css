@@ -1,5 +1,4 @@
 .hero {
-  margin: auto 0;
   border: 1px solid black;
   border-radius: 2rem;
   padding: 2rem;
@@ -8,4 +7,21 @@
 .hero h1 {
   font-size: var(--font-size-xl);
   margin-bottom: 1rem;
+}
+
+.progress-section {
+  align-self: center;
+  width: 100%;
+  max-width: 720px;
+}
+
+.progress-section h2 {
+  font-size: var(--font-size-lg);
+  margin-bottom: 1rem;
+}
+
+.goals {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 1rem;
 }
