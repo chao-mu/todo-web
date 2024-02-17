@@ -1,1 +1,17 @@
-feat: new task entry
+feat: clear filters button
+feat: flash messages
+feat: intellisense
+feat: make meaning of task contributions clearer
+feat: mark completed uncompleted
+feat: multiple goals
+feat: propper form validation
+feat: task sorting
+fix: sometimes tasks not packed densely
+refactor: introduce typescript
+refactor: move goal into subcollection
+refactor: remove useAppData
+fix: deleted tasks included
+fix: progress bar does not clear on none selected
+refactor: emit type definitions
+feat: migration transactions
+feat: auto mark migrations as done
