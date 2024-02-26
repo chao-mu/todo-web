@@ -1,11 +1,13 @@
+"use client";
+
 // React
 import { useState } from "react";
 
 // React Hook Form
 import { useForm } from "react-hook-form";
 
-// React Router
-import { useRevalidator } from "react-router-dom";
+// NextJS
+import { useRouter } from "next/navigation";
 
 // Ours - Components
 import { Popup } from "./Popup";
@@ -14,9 +16,14 @@ import { Popup } from "./Popup";
 import styles from "./TaskForm.module.css";
 
 // Ours - DB
-import { saveTask } from "@/db";
+import { saveTask, TaskStatus } from "@/db";
+import type { LegacyTask } from "@/db";
 
-export function NewTaskPopupButton({ task }) {
+export type NewTaskPopupButtonProps = {
+  task: LegacyTask;
+};
+
+export function NewTaskPopupButton({ task }: NewTaskPopupButtonProps) {
   const [showEdit, setShowEdit] = useState(false);
 
   return (
@@ -27,7 +34,7 @@ export function NewTaskPopupButton({ task }) {
       >
         New Task
       </button>
-      <Popup show={showEdit} setShow={setShowEdit}>
+      <Popup show={showEdit}>
         <TaskForm
           task={task}
           onSuccess={() => setShowEdit(false)}
@@ -38,7 +45,7 @@ export function NewTaskPopupButton({ task }) {
   );
 }
 
-function arrayFromText(text) {
+function arrayFromText(text: string) {
   if (!text) {
     return [];
   }
@@ -49,8 +56,14 @@ function arrayFromText(text) {
     .filter((line) => line);
 }
 
-export function TaskForm({ task, onCancel, onSuccess }) {
-  const [error, setError] = useState();
+export type TaskFormProps = {
+  task?: LegacyTask;
+  onCancel?: () => void;
+  onSuccess?: () => void;
+};
+
+export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
+  const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
 
   const {
@@ -60,14 +73,14 @@ export function TaskForm({ task, onCancel, onSuccess }) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      title: task?.title || "",
-      goal: task?.goal || "",
-      contributions: (task?.contributions || []).join("\n"),
-      steps: (task?.steps || []).join("\n"),
+      title: task?.title ?? "",
+      goal: task?.goal ?? "",
+      contributions: (task?.contributions ?? []).join("\n"),
+      steps: (task?.steps ?? []).join("\n"),
     },
   });
 
-  const { revalidate } = useRevalidator();
+  const router = useRouter();
 
   const cancel = () => {
     reset();
@@ -77,32 +90,46 @@ export function TaskForm({ task, onCancel, onSuccess }) {
     }
   };
 
-  const onSubmit = async ({ contributions, steps, title, goal }, e) => {
-    e.preventDefault();
+  const onSubmit = handleSubmit(
+    async (
+      {
+        contributions,
+        steps,
+        title,
+        goal,
+      }: { contributions: string; steps: string; title: string; goal: string },
+      e,
+    ) => {
+      e?.preventDefault();
 
-    setLoading(true);
+      setLoading(true);
 
-    await saveTask({
-      ...task,
-      title,
-      goal,
-      contributions: arrayFromText(contributions),
-      steps: arrayFromText(steps),
-    })
-      .then(() => {
-        revalidate();
+      const saveResult = await saveTask({
+        ...(task ?? {}),
+        title,
+        goal,
+        contributions: arrayFromText(contributions),
+        steps: arrayFromText(steps),
+        deleted: false,
+        status: TaskStatus.Pending,
+      });
+
+      if ("error" in saveResult) {
+        setError(saveResult.error);
+      } else {
+        router.refresh();
         if (onSuccess) {
           onSuccess();
         }
 
         reset();
-      })
-      .catch((reason) => setError(reason.message));
+      }
 
-    setLoading(false);
-  };
+      setLoading(false);
+    },
+  );
 
-  const ErrorLabel = ({ htmlFor }) => {
+  const ErrorLabel = ({ htmlFor }: { htmlFor: keyof typeof errors }) => {
     const error = errors[htmlFor];
     return error ? (
       <label htmlFor={htmlFor} className={styles["form__error"]}>
@@ -112,7 +139,7 @@ export function TaskForm({ task, onCancel, onSuccess }) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={styles["form"]}>
+    <form onSubmit={onSubmit} className={styles["form"]}>
       <input
         type="text"
         placeholder="New task"

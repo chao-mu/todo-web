@@ -10,28 +10,34 @@ import { TaskStatus } from "@/db";
 // Ours - Components
 import { Progress } from "@/components/Progress";
 
+type GoalProgress = {
+  total: number;
+  completed: number;
+};
+
 export default function Page() {
   const { tasks } = useAppData();
 
-  const progressByGoal = tasks.reduce((acc, { goal, status, deleted }) => {
-    if (deleted) {
-      return acc;
-    }
+  const progressByGoal = tasks.reduce(
+    (acc, { goal, status, deleted }) => {
+      if (deleted) {
+        return acc;
+      }
 
-    const progress = acc[goal] || { total: 0, completed: 0 };
+      const progress = acc[goal] ?? { total: 0, completed: 0 };
 
-    progress.total += 1;
-    if (status === TaskStatus.COMPLETED) {
-      progress.completed += 1;
-    }
+      progress.total += 1;
+      if (status === TaskStatus.Completed) {
+        progress.completed += 1;
+      }
 
-    return {
-      ...acc,
-      [goal]: progress,
-    };
-  }, {});
-
-  console.log(tasks);
+      return {
+        ...acc,
+        [goal]: progress,
+      };
+    },
+    {} as Record<string, GoalProgress>,
+  );
 
   return (
     <>
@@ -55,7 +61,7 @@ export default function Page() {
                   <Progress current={completed} total={total} />
                 </div>
               </>
-            )
+            ),
           )}
         </div>
       </section>

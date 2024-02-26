@@ -1,5 +1,7 @@
+"use client";
+
 // React Router
-import { useNavigate } from "react-router";
+import { useRouter } from "next/navigation";
 
 // Ours - Auth
 import { signIn } from "@/auth";
@@ -7,15 +9,16 @@ import { signIn } from "@/auth";
 // Ours - Styles
 import styles from "./page.module.css";
 
+// Ours - Firebase
+import "@/app/firebase";
+
 export default function Page() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-
+  const onSubmit = () => {
     signIn()
       .then(() => {
-        navigate("/");
+        router.push("/");
       })
       .catch((error) => {
         console.error(error);

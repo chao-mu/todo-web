@@ -1,3 +1,5 @@
+"use client";
+
 // React
 import { useId, useState } from "react";
 
@@ -14,7 +16,13 @@ import styles from "./page.module.css";
 // Ours - DB
 import { TaskStatus } from "@/db";
 
-function GoalFilter({ goal, checked, onChange }) {
+type GoalFilterProps = {
+  goal: string;
+  checked: boolean;
+  onChange: (goal: string, checked: boolean) => void;
+};
+
+function GoalFilter({ goal, checked, onChange }: GoalFilterProps) {
   return (
     <label htmlFor={goal} className={styles["goals__filter"]}>
       <input
@@ -34,7 +42,7 @@ export default function Page() {
 
   let tasks = appData.tasks.filter(({ deleted }) => !deleted);
 
-  const goalsSet = new Set();
+  const goalsSet = new Set<string>();
   for (const task of tasks) {
     goalsSet.add(task.goal);
   }
@@ -44,7 +52,7 @@ export default function Page() {
   const [allGoalChecked, setAllGoalChecked] = useState(true);
   const [selectedGoals, setSelectedGoals] = useState(goals);
 
-  const onAllGoalChange = (_, checked) => {
+  const onAllGoalChange = (checked: boolean) => {
     if (checked) {
       setSelectedGoals(goals);
     } else if (selectedGoals.length === goals.length) {
@@ -54,7 +62,11 @@ export default function Page() {
     setAllGoalChecked(checked);
   };
 
-  const onGoalFilterChange = (goal, checked) => {
+  const onGoalFilterChange = (goal: string, checked: boolean) => {
+    if (goal == allGoalKey) {
+      onAllGoalChange(checked);
+      return;
+    }
     if (allGoalChecked && !checked) {
       setAllGoalChecked(false);
     } else if (checked && selectedGoals.length === goals.length - 1) {
@@ -75,7 +87,7 @@ export default function Page() {
   const total = tasks.length;
 
   const completed = tasks.filter(
-    (task) => task.status === TaskStatus.COMPLETED
+    (task) => task.status === TaskStatus.Completed,
   ).length;
 
   return (
@@ -84,9 +96,9 @@ export default function Page() {
       <div className={styles["goals"]}>
         <GoalFilter
           key={allGoalKey}
-          goal="All"
+          goal={allGoalKey}
           checked={allGoalChecked}
-          onChange={onAllGoalChange}
+          onChange={onGoalFilterChange}
         />
         {goals.map((goal) => (
           <GoalFilter

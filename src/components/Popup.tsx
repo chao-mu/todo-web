@@ -1,6 +1,11 @@
 import styles from "./Popup.module.css";
 
-export function Popup({ children, show }) {
+type PopupProps = {
+  children: React.ReactNode;
+  show: boolean;
+};
+
+export function Popup({ children, show }: PopupProps) {
   if (!show) {
     return null;
   }

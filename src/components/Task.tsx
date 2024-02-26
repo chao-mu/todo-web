@@ -1,8 +1,10 @@
+"use client";
+
 // React
 import { useState } from "react";
 
-// React Router
-import { useRevalidator } from "react-router-dom";
+// NextJS
+import { useRouter } from "next/navigation";
 
 // Ours - Components
 import { Popup } from "./Popup";
@@ -10,33 +12,39 @@ import { TaskForm } from "./TaskForm";
 
 // Ours - DB
 import { deleteTask, updateTask, TaskStatus } from "@/db";
+import type { PersistedLegacyTask, QueryResult } from "@/db";
 
 // Ours - Styles
 import styles from "./Task.module.css";
 
-export function Task({ task }) {
+type TaskProps = {
+  task: PersistedLegacyTask;
+};
+
+export function Task({ task }: TaskProps) {
   const [showEdit, setShowEdit] = useState(false);
-  const { revalidate } = useRevalidator();
-  const [error, setError] = useState();
+  const router = useRouter();
+  const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
 
-  const callWrapper = (action, fn) => async () => {
-    setLoading(true);
+  function callWrapper<T>(action: string, fn: () => Promise<QueryResult<T>>) {
+    return async () => {
+      setLoading(true);
 
-    await fn()
-      .catch((reason) => {
-        setError(`Error ${action}: ${reason.message}`);
-      })
-      .then(() => {
-        revalidate();
-      });
+      const result = await fn();
+      if ("error" in result) {
+        setError(`Error ${action}: ${error}`);
+      } else {
+        router.refresh();
+      }
 
-    setLoading(false);
-  };
+      setLoading(false);
+    };
+  }
 
   const onDelete = callWrapper("deleting task", () => deleteTask(task));
   const markComplete = callWrapper("marking task completed", () =>
-    updateTask(task.id, { status: TaskStatus.COMPLETED })
+    updateTask(task.id, { status: TaskStatus.Completed }),
   );
 
   return (
@@ -86,7 +94,7 @@ export function Task({ task }) {
         )}
       </div>
       <div className={styles["error"]}>{error}</div>
-      <Popup show={showEdit} setShow={setShowEdit}>
+      <Popup show={showEdit}>
         <TaskForm
           task={task}
           onSuccess={() => setShowEdit(false)}

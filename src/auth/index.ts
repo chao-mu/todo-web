@@ -6,9 +6,17 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 
+import type { User as FirebaseUser } from "firebase/auth";
+
 const UserStorageKey = "user";
 
-function toUser(firebaseUser) {
+type AuthUser = {
+  uid: string;
+  displayName: string | null;
+  photoURL: string | null;
+};
+
+function toUser(firebaseUser: FirebaseUser): AuthUser {
   return {
     uid: firebaseUser.uid,
     displayName: firebaseUser.displayName,
@@ -26,7 +34,7 @@ onAuthStateChanged(getAuth(), (user) => {
 
 export function getUser() {
   const user = localStorage.getItem(UserStorageKey);
-  return user ? JSON.parse(user) : null;
+  return user ? (JSON.parse(user) as AuthUser) : null;
 }
 
 export function signIn() {

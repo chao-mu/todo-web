@@ -1,6 +1,11 @@
 import styles from "./Progress.module.css";
 
-export function Progress({ current, total }) {
+export type ProgressProps = {
+  current: number;
+  total: number;
+};
+
+export function Progress({ current, total }: ProgressProps) {
   const progress = (current / total) * 100;
 
   return (

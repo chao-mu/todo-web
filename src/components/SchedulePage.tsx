@@ -6,9 +6,15 @@ import styles from "./page.module.css";
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-export default function Page({ title, tasks, addons }) {
+type SchedulePageProps = {
+  title: string;
+  tasks: { id: string; title: string }[];
+  addons?: { id: string; title: string }[];
+};
+
+export function SchedulePage({ title, tasks, addons }: SchedulePageProps) {
   return (
-    <main className={styles["page"]}>
+    <>
       <h1>{title}</h1>
       {days.map((day) => (
         <div className={styles["header"]} key={day}>
@@ -33,6 +39,6 @@ export default function Page({ title, tasks, addons }) {
           ))}
         </div>
       )}
-    </main>
+    </>
   );
 }
