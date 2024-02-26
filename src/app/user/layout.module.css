@@ -1,7 +1,6 @@
 .main {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   gap: var(--spacing-lg);
   align-items: center;
   padding: var(--spacing-lg);
@@ -10,14 +9,4 @@
 .header {
   align-self: center;
   margin: var(--spacing-md);
-}
-
-.nav > ul {
-  display: flex;
-  gap: var(--spacing-md);
-  list-style: none;
-}
-
-.nav__item__link--active {
-  font-weight: 700;
 }
