@@ -17,4 +17,3 @@ feat: migration transactions
 feat: auto mark migrations as done
 feat: db module to typescript
 feat: fix deps vulns
-chore: remove firestore from project

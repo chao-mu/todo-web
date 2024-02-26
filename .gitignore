@@ -22,7 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.firebase
 /secrets
 /.next
 .env.*
