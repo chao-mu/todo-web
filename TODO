@@ -15,3 +15,6 @@ fix: progress bar does not clear on none selected
 refactor: emit type definitions
 feat: migration transactions
 feat: auto mark migrations as done
+feat: db module to typescript
+feat: fix deps vulns
+chore: remove firestore from project

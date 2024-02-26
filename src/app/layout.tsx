@@ -1,5 +1,9 @@
+// NextJS
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+// NextAuth
+//import { getServerSession } from "next-auth";
 
 // Ours - Styles
 import "./global.css";
@@ -28,12 +32,15 @@ function NavLinkItem({ to, children, currentPath }: NavLinkItemProps) {
   );
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+
+  //const session = await getServerSession();
+  //console.log("session", session);
 
   return (
     <html lang="en">

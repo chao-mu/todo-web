@@ -25,3 +25,5 @@ dist-ssr
 .firebase
 /secrets
 /.next
+.env.*
+.env
