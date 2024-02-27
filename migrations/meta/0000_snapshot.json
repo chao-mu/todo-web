@@ -1,5 +1,5 @@
 {
-  "id": "2a457309-a9b8-4ab5-8fee-a60d78065bd0",
+  "id": "035c5ce3-7961-411c-ac16-3d760e60aa3c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -144,6 +144,69 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "task": {
+      "name": "task",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "steps": {
+          "name": "steps",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "status": {
+          "name": "status",
+          "type": "taskStatus",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
+        "deleted": {
+          "name": "deleted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "task_userId_user_id_fk": {
+          "name": "task_userId_user_id_fk",
+          "tableFrom": "task",
+          "tableTo": "user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "user": {
       "name": "user",
       "schema": "",
@@ -221,7 +284,15 @@
       "uniqueConstraints": {}
     }
   },
-  "enums": {},
+  "enums": {
+    "taskStatus": {
+      "name": "taskStatus",
+      "values": {
+        "PENDING": "PENDING",
+        "COMPLETED": "COMPLETED"
+      }
+    }
+  },
   "schemas": {},
   "_meta": {
     "columns": {},

@@ -11,3 +11,4 @@ fix: progress bar does not clear on none selected
 fix: sometimes tasks not packed densely
 refactor: remove useAppData
 feat: typesafe env
+refactor: move model code out of db/index.ts

@@ -4,9 +4,14 @@ import {
   integer,
   pgTable,
   text,
+  pgEnum,
+  boolean,
+  serial,
 } from "drizzle-orm/pg-core";
 
 import type { AdapterAccount } from "@auth/core/adapters";
+
+export const taskStatusEnum = pgEnum("taskStatus", ["PENDING", "COMPLETED"]);
 
 export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
@@ -59,3 +64,14 @@ export const verificationTokens = pgTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   }),
 );
+
+export const tasks = pgTable("task", {
+  id: serial("id").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id),
+  title: text("name").notNull(),
+  steps: text("steps").notNull().default(""),
+  status: taskStatusEnum("status").notNull().default("PENDING"),
+  deleted: boolean("deleted").notNull().default(false),
+});
