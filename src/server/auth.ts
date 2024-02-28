@@ -55,7 +55,7 @@ export async function getServerSession() {
 }
 
 export async function getAuthenticatedSession() {
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession();
   if (!session) {
     throw new Error("Unauthenticated access");
   }

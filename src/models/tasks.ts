@@ -88,6 +88,5 @@ export async function getTasks(
         status: task.status as TaskStatus,
       })),
     )
-    .then((tasks) => ({ data: tasks }))
-    .catch((error) => ({ error: error.message }));
+    .then((tasks) => ({ data: tasks }));
 }
