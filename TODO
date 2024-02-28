@@ -12,3 +12,4 @@ fix: sometimes tasks not packed densely
 refactor: remove useAppData
 feat: typesafe env
 refactor: move model code out of db/index.ts
+refactor: better handling of unauth

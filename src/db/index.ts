@@ -1,3 +1,10 @@
+// Drizzle
+import { eq } from "drizzle-orm";
+
+// Ours - DB
+import { tasks } from "./schema";
+import { db } from "./db";
+
 export type LegacyTask = {
   title: string;
   contributions: string[];
@@ -65,31 +72,22 @@ export async function addTasks(
   return { error: "unimplemented" };
 }
 
-export async function getTasks(): Promise<QueryResult<PersistedLegacyTask[]>> {
-  const mockData: PersistedLegacyTask[] = [
-    {
-      id: 1,
-      title: "Task 1",
-      contributions: ["Contribution 1"],
-      goal: "Goal 1",
-      steps: ["Step 1", "Step 2"],
-      deleted: false,
-      status: TaskStatus.Pending,
-    },
-    {
-      id: 2,
-      title: "Task 2",
-      contributions: ["Contribution 2"],
-      goal: "Goal 2",
-      steps: ["Step 3", "Step 4"],
-      deleted: false,
-      status: TaskStatus.Completed,
-    },
-  ];
-
-  return new Promise((resolve) =>
-    resolve({
-      data: mockData,
-    }),
-  );
+export async function getTasks(
+  userId: string,
+): Promise<QueryResult<PersistedLegacyTask[]>> {
+  return db
+    .select()
+    .from(tasks)
+    .where(eq(tasks.userId, userId))
+    .then((rows) =>
+      rows.map((task) => ({
+        ...task,
+        steps: task.steps.split("\n"),
+        goal: "unspecified",
+        contributions: ["unspecified"],
+        status: task.status as TaskStatus,
+      })),
+    )
+    .then((tasks) => ({ data: tasks }))
+    .catch((error) => ({ error: error.message }));
 }
