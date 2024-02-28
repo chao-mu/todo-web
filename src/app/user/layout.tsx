@@ -8,14 +8,14 @@ import styles from "./layout.module.css";
 import { SiteNav } from "@/components/SiteNav";
 
 // Ours - Auth
-import { getServerAuthSession } from "@/server/auth";
+import { getServerSession } from "@/server/auth";
 
 export default async function UserLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerAuthSession();
+  const session = await getServerSession();
   if (!session) {
     redirect("/");
   }

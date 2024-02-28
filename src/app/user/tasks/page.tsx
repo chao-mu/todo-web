@@ -5,13 +5,10 @@ import { FilterableTasks } from "@/components/FilterableTasks";
 import { getTasks } from "@/models/tasks";
 
 // Ours - Auth
-import { getServerAuthSession } from "@/server/auth";
+import { getAuthenticatedSession } from "@/server/auth";
 
 export default async function Page() {
-  const session = await getServerAuthSession();
-  if (!session) {
-    throw new Error("Unauthenticated access");
-  }
+  const session = await getAuthenticatedSession();
 
   const tasksRes = await getTasks(session.user.id);
   if ("error" in tasksRes) {

@@ -1,6 +1,6 @@
 // NextAuth.js
 import DiscordProvider from "next-auth/providers/discord";
-import { getServerSession } from "next-auth";
+import { getServerSession as nextGetServerSession } from "next-auth";
 import type { DefaultSession, NextAuthOptions } from "next-auth";
 
 import { db } from "@/db/db";
@@ -50,6 +50,15 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-export function getServerAuthSession() {
-  return getServerSession(authOptions);
+export async function getServerSession() {
+  return await nextGetServerSession(authOptions);
+}
+
+export async function getAuthenticatedSession() {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    throw new Error("Unauthenticated access");
+  }
+
+  return session;
 }
