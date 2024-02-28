@@ -16,8 +16,8 @@ import { Popup } from "./Popup";
 import styles from "./TaskForm.module.css";
 
 // Ours - DB
-import { saveTask, TaskStatus } from "@/db";
-import type { LegacyTask } from "@/db";
+import { saveTask, TaskStatus } from "@/models/tasks";
+import type { LegacyTask } from "@/models/tasks";
 
 export type NewTaskPopupButtonProps = {
   task: LegacyTask;

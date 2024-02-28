@@ -4,8 +4,8 @@ import { useAppData } from "@/hooks";
 // Ours - Styles
 import styles from "./page.module.css";
 
-// Ours - DB
-import { TaskStatus } from "@/db";
+// Ours - Models
+import { TaskStatus } from "@/models/tasks";
 
 // Ours - Components
 import { Progress } from "@/components/Progress";
@@ -15,10 +15,11 @@ type GoalProgress = {
   completed: number;
 };
 
+type GoalProgressLookup = Record<string, GoalProgress>;
 export default function Page() {
   const { tasks } = useAppData();
 
-  const progressByGoal = tasks.reduce(
+  const progressByGoal: GoalProgressLookup = tasks.reduce(
     (acc, { goal, status, deleted }) => {
       if (deleted) {
         return acc;
@@ -36,7 +37,7 @@ export default function Page() {
         [goal]: progress,
       };
     },
-    {} as Record<string, GoalProgress>,
+    {} as GoalProgressLookup,
   );
 
   return (

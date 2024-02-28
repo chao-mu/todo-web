@@ -10,9 +10,9 @@ import { useRouter } from "next/navigation";
 import { Popup } from "./Popup";
 import { TaskForm } from "./TaskForm";
 
-// Ours - DB
-import { deleteTask, updateTask, TaskStatus } from "@/db";
-import type { PersistedLegacyTask, QueryResult } from "@/db";
+// Ours - Model
+import { deleteTask, updateTask, TaskStatus } from "@/models/tasks";
+import type { PersistedLegacyTask, QueryResult } from "@/models/tasks";
 
 // Ours - Styles
 import styles from "./Task.module.css";

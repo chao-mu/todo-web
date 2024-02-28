@@ -2,8 +2,8 @@
 import { eq } from "drizzle-orm";
 
 // Ours - DB
-import { tasks } from "./schema";
-import { db } from "./db";
+import { tasks } from "@/db/schema";
+import { db } from "@/db/db";
 
 export type LegacyTask = {
   title: string;

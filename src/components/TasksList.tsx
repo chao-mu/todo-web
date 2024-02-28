@@ -1,7 +1,7 @@
 // Ours - Components
 import { Task } from "./Task";
 
-import type { PersistedLegacyTask } from "@/db";
+import type { PersistedLegacyTask } from "@/models/tasks";
 
 // Ours - Styles
 import styles from "./TasksList.module.css";

@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 
 import { sql } from "drizzle-orm";
-import { db } from "./db";
+import { db } from "@/db/db";
 
 async function main() {
   const [, , table] = process.argv;

@@ -1,8 +1,8 @@
 // Ours - Components
 import { FilterableTasks } from "@/components/FilterableTasks";
 
-// Ours - DB
-import { getTasks } from "@/db";
+// Ours - Models
+import { getTasks } from "@/models/tasks";
 
 // Ours - Auth
 import { getServerAuthSession } from "@/server/auth";

@@ -11,7 +11,7 @@ import { Progress } from "@/components/Progress";
 import styles from "./FilterableTasks.module.css";
 
 // Ours - DB
-import { TaskStatus, PersistedLegacyTask } from "@/db";
+import { TaskStatus, PersistedLegacyTask } from "@/models/tasks";
 
 type GoalFilterProps = {
   goal: string;
