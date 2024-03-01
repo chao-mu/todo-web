@@ -11,7 +11,7 @@ import { Progress } from "@/components/Progress";
 import styles from "./FilterableTasks.module.css";
 
 // Ours - Models
-import { TaskStatus, type PersistedLegacyTask } from "@/models/tasks";
+import { TaskStatus, type PersistedTask } from "@/app/actions";
 
 type GoalFilterProps = {
   goal: string;
@@ -34,7 +34,7 @@ function GoalFilter({ goal, checked, onChange }: GoalFilterProps) {
 }
 
 export type FilterableTasksProps = {
-  tasks: PersistedLegacyTask[];
+  tasks: PersistedTask[];
 };
 
 export function FilterableTasks({ tasks }: FilterableTasksProps) {

@@ -10,15 +10,20 @@ import { useRouter } from "next/navigation";
 import { Popup } from "./Popup";
 import { TaskForm } from "./TaskForm";
 
-// Ours - Model
-import { deleteTask, updateTask, TaskStatus } from "@/models/tasks";
-import type { PersistedLegacyTask, QueryResult } from "@/models/tasks";
+// Ours - Server side actions
+import {
+  deleteTask,
+  markTaskCompleted,
+  type Task,
+  type PersistedTask,
+  type APIResponse,
+} from "@/app/actions";
 
 // Ours - Styles
 import styles from "./Task.module.css";
 
 type TaskProps = {
-  task: PersistedLegacyTask;
+  task: PersistedTask;
 };
 
 export function Task({ task }: TaskProps) {
@@ -27,7 +32,7 @@ export function Task({ task }: TaskProps) {
   const [error, setError] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
 
-  function callWrapper<T>(action: string, fn: () => Promise<QueryResult<T>>) {
+  function callWrapper<T>(action: string, fn: () => Promise<APIResponse<T>>) {
     return async () => {
       setLoading(true);
 
@@ -44,7 +49,7 @@ export function Task({ task }: TaskProps) {
 
   const onDelete = callWrapper("deleting task", () => deleteTask(task));
   const markComplete = callWrapper("marking task completed", () =>
-    updateTask(task.id, { status: TaskStatus.Completed }),
+    markTaskCompleted({ id: task.id }),
   );
 
   return (
@@ -61,7 +66,7 @@ export function Task({ task }: TaskProps) {
         ))}
       </ul>
       <ol className={styles["task__steps"]}>
-        {task.steps?.map((step, idx) => (
+        {task.steps.split("\n").map((step, idx) => (
           <li key={idx} className={styles["task__step"]}>
             {step}
           </li>

@@ -7,6 +7,7 @@ import {
   pgEnum,
   boolean,
   serial,
+  unique,
 } from "drizzle-orm/pg-core";
 
 import type { AdapterAccount } from "@auth/core/adapters";
@@ -75,3 +76,33 @@ export const tasks = pgTable("task", {
   status: taskStatusEnum("status").notNull().default("PENDING"),
   deleted: boolean("deleted").notNull().default(false),
 });
+
+export const goals = pgTable(
+  "goal",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id),
+    title: text("name").notNull(),
+    deleted: boolean("deleted").notNull().default(false),
+  },
+  (tbl) => ({
+    unq: unique().on(tbl.userId, tbl.title),
+  }),
+);
+
+export const tasksGoals = pgTable(
+  "task_goal",
+  {
+    taskId: integer("taskId")
+      .notNull()
+      .references(() => tasks.id),
+    goalId: integer("goalId")
+      .notNull()
+      .references(() => goals.id),
+  },
+  (tbl) => ({
+    pk: primaryKey({ columns: [tbl.taskId, tbl.goalId] }),
+  }),
+);

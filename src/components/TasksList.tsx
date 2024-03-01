@@ -1,13 +1,13 @@
 // Ours - Components
 import { Task } from "./Task";
 
-import type { PersistedLegacyTask } from "@/models/tasks";
+import type { PersistedTask } from "@/app/actions";
 
 // Ours - Styles
 import styles from "./TasksList.module.css";
 
 export type TasksListProps = {
-  tasks: PersistedLegacyTask[];
+  tasks: PersistedTask[];
 };
 
 export function TasksList({ tasks }: TasksListProps) {

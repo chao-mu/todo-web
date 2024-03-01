@@ -15,12 +15,11 @@ import { Popup } from "./Popup";
 // Ours - Styles
 import styles from "./TaskForm.module.css";
 
-// Ours - DB
-import { saveTask, TaskStatus } from "@/models/tasks";
-import type { LegacyTask } from "@/models/tasks";
+// Ours - Server side actions
+import { saveTask, type Task } from "@/app/actions";
 
 export type NewTaskPopupButtonProps = {
-  task: LegacyTask;
+  task: Task;
 };
 
 export function NewTaskPopupButton({ task }: NewTaskPopupButtonProps) {
@@ -45,19 +44,8 @@ export function NewTaskPopupButton({ task }: NewTaskPopupButtonProps) {
   );
 }
 
-function arrayFromText(text: string) {
-  if (!text) {
-    return [];
-  }
-
-  return text
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line);
-}
-
 export type TaskFormProps = {
-  task?: LegacyTask;
+  task?: Task;
   onCancel?: () => void;
   onSuccess?: () => void;
 };
@@ -72,12 +60,7 @@ export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
     reset,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      title: task?.title ?? "",
-      goal: task?.goal ?? "",
-      contributions: (task?.contributions ?? []).join("\n"),
-      steps: (task?.steps ?? []).join("\n"),
-    },
+    defaultValues: task,
   });
 
   const router = useRouter();
@@ -90,44 +73,26 @@ export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
     }
   };
 
-  const onSubmit = handleSubmit(
-    async (
-      {
-        contributions,
-        steps,
-        title,
-        goal,
-      }: { contributions: string; steps: string; title: string; goal: string },
-      e,
-    ) => {
-      e?.preventDefault();
+  const onSubmit = handleSubmit(async (task: Task, e) => {
+    e?.preventDefault();
 
-      setLoading(true);
+    setLoading(true);
 
-      const saveResult = await saveTask({
-        ...(task ?? {}),
-        title,
-        goal,
-        contributions: arrayFromText(contributions),
-        steps: arrayFromText(steps),
-        deleted: false,
-        status: TaskStatus.Pending,
-      });
+    const saveResult = await saveTask({ task });
 
-      if ("error" in saveResult) {
-        setError(saveResult.error);
-      } else {
-        router.refresh();
-        if (onSuccess) {
-          onSuccess();
-        }
-
-        reset();
+    if ("error" in saveResult) {
+      setError(saveResult.error);
+    } else {
+      router.refresh();
+      if (onSuccess) {
+        onSuccess();
       }
 
-      setLoading(false);
-    },
-  );
+      reset();
+    }
+
+    setLoading(false);
+  });
 
   const ErrorLabel = ({ htmlFor }: { htmlFor: keyof typeof errors }) => {
     const error = errors[htmlFor];
