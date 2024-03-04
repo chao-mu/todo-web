@@ -2,7 +2,7 @@
 import { eq } from "drizzle-orm";
 
 // Ours - DB
-import { goals } from "@/db/schema";
+import { goals, tasksGoals } from "@/db/schema";
 import { db } from "@/db/db";
 
 // Ours - Model
@@ -13,6 +13,28 @@ export type Goal = Omit<PersistedGoal, "id">;
 
 export async function getGoals(userId: string): Promise<PersistedGoal[]> {
   return db.select().from(goals).where(eq(goals.userId, userId));
+}
+
+export async function addGoalToTask({
+  goalId,
+  taskId,
+}: {
+  goalId: number;
+  taskId: number;
+}): Promise<QueryResult<object>> {
+  try {
+    await db
+      .insert(tasksGoals)
+      .values({
+        taskId,
+        goalId,
+      })
+      .onConflictDoNothing();
+  } catch (e) {
+    return { error: `Failed to add goal to task` };
+  }
+
+  return { data: {} };
 }
 
 export async function saveGoal(

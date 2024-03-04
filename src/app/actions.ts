@@ -4,7 +4,9 @@
 import { z } from "zod";
 
 // Ours - Models
-import { TaskStatus } from "@/models/tasks";
+import { insertTask, updateTask, TaskStatus } from "@/server/models/tasks";
+
+import { addGoalToTask, saveGoal } from "@/server/models/goals";
 
 export { TaskStatus };
 
@@ -51,6 +53,12 @@ export async function deleteTask({
   return { error: `Not implemented. ${id}` };
 }
 
+export async function getTasks(): Promise<APIResponse<PersistedTask[]>> {
+  //const session = await getAuthenticatedSession();
+
+  return { error: "Not implemented" };
+}
+
 export async function saveTask({
   task: taskArg,
 }: {
@@ -59,15 +67,32 @@ export async function saveTask({
   const result = validateTask(taskArg);
   if ("error" in result) return result;
 
-  return { error: "Not implemented" };
-
   /*
-  const res = await serverSaveTask(result.data);
+  const task = result.data;
 
+  const res = await ("id" in task ? updateTask(task) : insertTask(task));
   if ("error" in res) {
     return res;
   }
 
-  return { data: { id: res.data.id } };
-    */
+  const goalSaveResult = await saveGoal({
+    userId: task.userId,
+    title: task.goal,
+    deleted: false,
+  });
+
+  if ("error" in goalSaveResult) {
+    return { error: `Failed to save goal for task: ${goalSaveResult.error}` };
+  }
+
+  const goalId = goalSaveResult.data.id;
+
+  const goalAddResult = await addGoalToTask({ goalId, taskId: res.data.id });
+
+  if ("error" in goalAddResult) {
+    return { error: `Failed to add goal to task: ${goalAddResult.error}` };
+  }
+*/
+
+  return { error: "Not implemented" };
 }

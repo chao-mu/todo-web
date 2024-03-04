@@ -1,11 +1,8 @@
-// Ours - Auth
-import { getAuthenticatedSession } from "@/server/auth";
-
 // Ours - Styles
 import styles from "./page.module.css";
 
 // Ours - Models
-import { TaskStatus, getTasks } from "@/models/tasks";
+import { TaskStatus, getTasks } from "@/app/actions";
 
 // Ours - Components
 import { Progress } from "@/components/Progress";
@@ -17,9 +14,7 @@ type GoalProgress = {
 
 type GoalProgressLookup = Record<string, GoalProgress>;
 export default async function Page() {
-  const session = await getAuthenticatedSession();
-
-  const tasksRes = await getTasks(session.user.id);
+  const tasksRes = await getTasks();
   if ("error" in tasksRes) {
     throw new Error(`Unable to retrieve tasks: ${tasksRes.error}`);
   }

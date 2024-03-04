@@ -2,15 +2,10 @@
 import { FilterableTasks } from "@/components/FilterableTasks";
 
 // Ours - Models
-import { getTasks } from "@/models/tasks";
-
-// Ours - Auth
-import { getAuthenticatedSession } from "@/server/auth";
+import { getTasks } from "@/app/actions";
 
 export default async function Page() {
-  const session = await getAuthenticatedSession();
-
-  const tasksRes = await getTasks(session.user.id);
+  const tasksRes = await getTasks();
   if ("error" in tasksRes) {
     throw new Error(`Unable to retrieve tasks: ${tasksRes.error}`);
   }

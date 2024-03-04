@@ -11,6 +11,5 @@ fix: progress bar does not clear on none selected
 fix: sometimes tasks not packed densely
 refactor: remove useAppData
 feat: typesafe env
-refactor: move models into server dir
 refactor: custom error types
 refactor: standardize add/create naming
