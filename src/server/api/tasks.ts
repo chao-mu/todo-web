@@ -11,13 +11,9 @@ import { goals, tasks, tasksGoals } from "@/db/schema";
 import { db } from "@/db/db";
 
 // Ours - API
-import {
-  protectedProcedure,
-  noArgs,
-  type APIError,
-  isAPIError,
-} from "./shared";
+import { protectedProcedure, noArgs, isAPIError } from "./shared";
 import * as goalsAPI from "./goals";
+import { TaskStatus } from "@/types";
 
 export const all = protectedProcedure(noArgs, async ({ session }) => {
   const userId = session.user.id;
@@ -46,7 +42,12 @@ export const all = protectedProcedure(noArgs, async ({ session }) => {
 
 export const markCompleted = protectedProcedure(
   z.object({ id: z.number() }),
-  async () => null,
+  async ({ session, input: { id } }) =>
+    db
+      .update(tasks)
+      .set({ status: TaskStatus.Completed })
+      .where(and(eq(tasks.id, id), eq(tasks.userId, session.user.id)))
+      .then(() => true),
 );
 
 export const save = protectedProcedure(
