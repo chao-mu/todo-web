@@ -10,7 +10,13 @@ export default async function Page() {
     throw new Error(`Unable to retrieve tasks: ${tasksRes.error}`);
   }
 
-  const tasks = tasksRes.data;
+  const goalsRes = await api.goals.all({});
+  if ("error" in goalsRes) {
+    throw new Error(`Unable to retrieve goals: ${goalsRes.error}`);
+  }
 
-  return <FilterableTasks tasks={tasks} />;
+  const tasks = tasksRes.data;
+  const goals = goalsRes.data.map((goal) => goal.title);
+
+  return <FilterableTasks tasks={tasks} goals={goals} />;
 }

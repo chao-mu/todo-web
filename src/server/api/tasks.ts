@@ -7,7 +7,7 @@ import { z } from "zod";
 import { and, eq } from "drizzle-orm";
 
 // Ours - DB
-import { tasks, tasksGoals } from "@/db/schema";
+import { goals, tasks, tasksGoals } from "@/db/schema";
 import { db } from "@/db/db";
 
 // Ours - API
@@ -19,13 +19,30 @@ import {
 } from "./shared";
 import * as goalsAPI from "./goals";
 
-export const all = protectedProcedure(noArgs, async ({ session }) =>
-  db
-    .select()
+export const all = protectedProcedure(noArgs, async ({ session }) => {
+  const userId = session.user.id;
+
+  return db
+    .select({
+      id: tasks.id,
+      title: tasks.title,
+      status: tasks.status,
+      steps: tasks.steps,
+      userId: tasks.userId,
+      deleted: tasks.deleted,
+      goal: goals.title,
+    })
     .from(tasks)
-    .where(eq(tasks.userId, session.user.id))
-    .then((rows) => rows.map((task) => ({ ...task, goal: "unspecified" }))),
-);
+    .leftJoin(tasksGoals, eq(tasksGoals.taskId, tasks.id))
+    .leftJoin(goals, eq(goals.id, tasksGoals.goalId))
+    .where(and(eq(tasks.userId, userId)))
+    .then((rows) =>
+      rows.map((row) => ({
+        ...row,
+        goal: row.goal ?? "unspecified",
+      })),
+    );
+});
 
 export const markCompleted = protectedProcedure(
   z.object({ id: z.number() }),
@@ -43,13 +60,13 @@ export const save = protectedProcedure(
       })
       .strict(),
   }),
-  async ({ session, input: { task } }): Promise<{ id: number } | APIError> => {
+  async ({ session, input: { task } }): Promise<{ id: number }> => {
     const userId = session.user.id;
 
     if (task.id) {
       await db
         .update(tasks)
-        .set(task)
+        .set({ title: task.title, steps: task.steps })
         .where(and(eq(tasks.id, task.id), eq(tasks.userId, userId)));
     } else {
       const res = await db
@@ -61,7 +78,7 @@ export const save = protectedProcedure(
         .returning({ id: tasks.id });
 
       if (!res?.[0]) {
-        return {
+        throw {
           error: "Database did not respond with id when inserting task",
         };
       }
@@ -71,8 +88,10 @@ export const save = protectedProcedure(
 
     const goalSaveRes = await goalsAPI.saveByTitle({ title: task.goal });
     if (isAPIError(goalSaveRes)) {
-      return goalSaveRes;
+      throw goalSaveRes;
     }
+
+    addGoal({ taskId: task.id, goalId: goalSaveRes.data.id });
 
     return { id: task.id };
   },

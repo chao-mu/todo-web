@@ -17,10 +17,16 @@ import styles from "./TaskForm.module.css";
 
 // Ours - API
 import { api } from "@/server/api";
-import type { Task } from "@/types";
+
+type FormValues = {
+  id?: number;
+  title: string;
+  goal: string;
+  steps: string;
+};
 
 export type NewTaskPopupButtonProps = {
-  task: Task;
+  task: FormValues;
 };
 
 export function NewTaskPopupButton({ task }: NewTaskPopupButtonProps) {
@@ -46,7 +52,7 @@ export function NewTaskPopupButton({ task }: NewTaskPopupButtonProps) {
 }
 
 export type TaskFormProps = {
-  task?: Task;
+  task?: FormValues;
   onCancel?: () => void;
   onSuccess?: () => void;
 };
@@ -60,8 +66,13 @@ export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
-    defaultValues: task,
+  } = useForm<FormValues>({
+    defaultValues: {
+      id: task?.id,
+      title: task?.title,
+      goal: task?.goal,
+      steps: task?.steps,
+    },
   });
 
   const router = useRouter();
@@ -74,7 +85,7 @@ export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
     }
   };
 
-  const onSubmit = handleSubmit(async (task: Task, e) => {
+  const onSubmit = handleSubmit(async (task: FormValues, e) => {
     e?.preventDefault();
 
     setLoading(true);

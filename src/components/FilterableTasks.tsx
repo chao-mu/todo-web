@@ -1,7 +1,7 @@
 "use client";
 
 // React
-import { useId, useState } from "react";
+import { type ReactNode, useId, useState } from "react";
 
 // Ours - Components
 import { TasksList } from "@/components/TasksList";
@@ -10,16 +10,17 @@ import { Progress } from "@/components/Progress";
 // Ours - Styles
 import styles from "./FilterableTasks.module.css";
 
-// Ours - Models
+// Ours - Types
 import { TaskStatus, type PersistedTask } from "@/types";
 
 type GoalFilterProps = {
   goal: string;
   checked: boolean;
   onChange: (goal: string, checked: boolean) => void;
+  children?: ReactNode;
 };
 
-function GoalFilter({ goal, checked, onChange }: GoalFilterProps) {
+function GoalFilter({ goal, checked, onChange, children }: GoalFilterProps) {
   return (
     <label htmlFor={goal} className={styles["goals__filter"]}>
       <input
@@ -28,26 +29,20 @@ function GoalFilter({ goal, checked, onChange }: GoalFilterProps) {
         checked={checked}
         onChange={(e) => onChange(goal, e.target.checked)}
       />
-      {goal}
+      {children ?? goal}
     </label>
   );
 }
 
 export type FilterableTasksProps = {
   tasks: PersistedTask[];
+  goals: string[];
 };
 
-export function FilterableTasks({ tasks }: FilterableTasksProps) {
+export function FilterableTasks({ tasks, goals }: FilterableTasksProps) {
   const allGoalKey = useId();
 
   tasks = tasks.filter(({ deleted }) => !deleted);
-
-  const goalsSet = new Set<string>();
-  for (const task of tasks) {
-    goalsSet.add(task.goal);
-  }
-
-  const goals = Array.from(goalsSet).sort();
 
   const [allGoalChecked, setAllGoalChecked] = useState(true);
   const [selectedGoals, setSelectedGoals] = useState(goals);
@@ -82,7 +77,10 @@ export function FilterableTasks({ tasks }: FilterableTasksProps) {
     });
   };
 
-  tasks = tasks.filter((task) => selectedGoals.includes(task.goal));
+  console.log(tasks);
+  tasks = tasks.filter(
+    (task) => selectedGoals.includes(task.goal) || task.goal === "unspecified",
+  );
 
   const total = tasks.length;
 
@@ -99,7 +97,9 @@ export function FilterableTasks({ tasks }: FilterableTasksProps) {
           goal={allGoalKey}
           checked={allGoalChecked}
           onChange={onGoalFilterChange}
-        />
+        >
+          All
+        </GoalFilter>
         {goals.map((goal) => (
           <GoalFilter
             key={goal}
