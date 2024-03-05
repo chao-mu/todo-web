@@ -1,11 +1,11 @@
 // Ours - Components
 import { FilterableTasks } from "@/components/FilterableTasks";
 
-// Ours - Models
-import { getTasks } from "@/app/actions";
+// Ours - API
+import { api } from "@/server/api";
 
 export default async function Page() {
-  const tasksRes = await getTasks();
+  const tasksRes = await api.tasks.all({});
   if ("error" in tasksRes) {
     throw new Error(`Unable to retrieve tasks: ${tasksRes.error}`);
   }

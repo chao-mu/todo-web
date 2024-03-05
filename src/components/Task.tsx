@@ -10,14 +10,9 @@ import { useRouter } from "next/navigation";
 import { Popup } from "./Popup";
 import { TaskForm } from "./TaskForm";
 
-// Ours - Server side actions
-import {
-  deleteTask,
-  markTaskCompleted,
-  type Task,
-  type PersistedTask,
-  type APIResponse,
-} from "@/app/actions";
+// Ours - API
+import { type APIResponse, api } from "@/server/api";
+import type { PersistedTask } from "@/types";
 
 // Ours - Styles
 import styles from "./Task.module.css";
@@ -47,9 +42,11 @@ export function Task({ task }: TaskProps) {
     };
   }
 
-  const onDelete = callWrapper("deleting task", () => deleteTask(task));
+  const onDelete = callWrapper("deleting task", () =>
+    api.tasks.deleteTask({ id: task.id }),
+  );
   const markComplete = callWrapper("marking task completed", () =>
-    markTaskCompleted({ id: task.id }),
+    api.tasks.markCompleted({ id: task.id }),
   );
 
   return (
@@ -57,14 +54,6 @@ export function Task({ task }: TaskProps) {
       <div data-task-status={task.status} className={styles["task__title"]}>
         {task.title}
       </div>
-      <div className={styles["goal__title"]}>{task.goal}</div>
-      <ul className={styles["goal__contributions"]}>
-        {task.contributions.map((contribution, idx) => (
-          <li key={idx} className={styles["goal__contribution"]}>
-            {contribution}
-          </li>
-        ))}
-      </ul>
       <ol className={styles["task__steps"]}>
         {task.steps.split("\n").map((step, idx) => (
           <li key={idx} className={styles["task__step"]}>

@@ -15,8 +15,9 @@ import { Popup } from "./Popup";
 // Ours - Styles
 import styles from "./TaskForm.module.css";
 
-// Ours - Server side actions
-import { saveTask, type Task } from "@/app/actions";
+// Ours - API
+import { api } from "@/server/api";
+import type { Task } from "@/types";
 
 export type NewTaskPopupButtonProps = {
   task: Task;
@@ -78,7 +79,7 @@ export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
 
     setLoading(true);
 
-    const saveResult = await saveTask({ task });
+    const saveResult = await api.tasks.save({ task });
 
     if ("error" in saveResult) {
       setError(saveResult.error);
@@ -119,11 +120,6 @@ export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
         {...register("goal", { required: true })}
       />
       <ErrorLabel htmlFor="goal" />
-      <textarea
-        placeholder="Contributions"
-        {...register("contributions")}
-        className={styles["form__contributions"]}
-      />
       <textarea
         placeholder="Steps"
         {...register("steps")}

@@ -11,7 +11,7 @@ import { Progress } from "@/components/Progress";
 import styles from "./FilterableTasks.module.css";
 
 // Ours - Models
-import { TaskStatus, type PersistedTask } from "@/app/actions";
+import { TaskStatus, type PersistedTask } from "@/types";
 
 type GoalFilterProps = {
   goal: string;

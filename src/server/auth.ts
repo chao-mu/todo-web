@@ -22,7 +22,6 @@ function getEnv(key: string): string {
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
-    accessTokenExpires?: Date;
     user: {
       id: string;
     } & DefaultSession["user"];

@@ -1,8 +1,11 @@
 // Ours - Styles
 import styles from "./page.module.css";
 
-// Ours - Models
-import { TaskStatus, getTasks } from "@/app/actions";
+// Ours - API
+import { api } from "@/server/api";
+
+// Ours - Types
+import { TaskStatus } from "@/types";
 
 // Ours - Components
 import { Progress } from "@/components/Progress";
@@ -14,7 +17,7 @@ type GoalProgress = {
 
 type GoalProgressLookup = Record<string, GoalProgress>;
 export default async function Page() {
-  const tasksRes = await getTasks();
+  const tasksRes = await api.tasks.all({});
   if ("error" in tasksRes) {
     throw new Error(`Unable to retrieve tasks: ${tasksRes.error}`);
   }

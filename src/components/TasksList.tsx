@@ -1,7 +1,7 @@
 // Ours - Components
 import { Task } from "./Task";
 
-import type { PersistedTask } from "@/app/actions";
+import type { PersistedTask } from "@/types";
 
 // Ours - Styles
 import styles from "./TasksList.module.css";
