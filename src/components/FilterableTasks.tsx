@@ -36,12 +36,11 @@ function GoalFilter({ goal, checked, onChange, children }: GoalFilterProps) {
 
 export type FilterableTasksProps = {
   tasks: PersistedTask[];
-  goals: string[];
 };
 
-export function FilterableTasks({ tasks, goals }: FilterableTasksProps) {
-  goals = [...goals, "unspecified"];
+export function FilterableTasks({ tasks }: FilterableTasksProps) {
   const allGoalKey = useId();
+  const goals = [...new Set(tasks.map((task) => task.goal))];
 
   tasks = tasks.filter(({ deleted }) => !deleted);
 
@@ -85,6 +84,8 @@ export function FilterableTasks({ tasks, goals }: FilterableTasksProps) {
   const completed = tasks.filter(
     (task) => task.status === TaskStatus.Completed,
   ).length;
+
+  tasks = tasks.filter((task) => task.status !== TaskStatus.Completed);
 
   return (
     <>

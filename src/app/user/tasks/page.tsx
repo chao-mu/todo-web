@@ -16,7 +16,6 @@ export default async function Page() {
   }
 
   const tasks = tasksRes.data;
-  const goals = goalsRes.data.map((goal) => goal.title);
 
-  return <FilterableTasks tasks={tasks} goals={goals} />;
+  return <FilterableTasks tasks={tasks} />;
 }
