@@ -8,6 +8,13 @@
       "when": 1709077322041,
       "tag": "0000_natural_kingpin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1709661700591,
+      "tag": "0001_orange_paper_doll",
+      "breakpoints": true
     }
   ]
 }

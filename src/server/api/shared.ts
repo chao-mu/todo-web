@@ -23,18 +23,23 @@ export function isAPIError(e: unknown): e is APIError {
   return (e as APIError)?.error !== undefined;
 }
 
-export function protectedProcedure<Z extends z.ZodTypeAny, O>(
-  schema: Z,
-  f: ProtectedFunc<z.infer<Z>, O>,
-) {
-  return async (rawInput: z.infer<Z>) => {
+export function protectedProcedure<I, O>(
+  schema: z.ZodType<I>,
+  f: ProtectedFunc<I, O>,
+): (input: I) => Promise<APIResponse<O>> {
+  return async (rawInput: I) => {
     const session = await getAuthenticatedSession();
 
     if (!session) {
       throw new Error("Unauthenticated access to protected endpoint");
     }
 
-    const input = schema.safeParse(rawInput);
+    const parseRes = schema.safeParse(rawInput);
+    if (!parseRes.success) {
+      return { error: parseRes.error.message };
+    }
+
+    const input = parseRes.data;
 
     try {
       const res = await f({ session, input });
