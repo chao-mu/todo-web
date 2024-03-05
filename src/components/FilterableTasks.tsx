@@ -40,6 +40,7 @@ export type FilterableTasksProps = {
 };
 
 export function FilterableTasks({ tasks, goals }: FilterableTasksProps) {
+  goals = [...goals, "unspecified"];
   const allGoalKey = useId();
 
   tasks = tasks.filter(({ deleted }) => !deleted);
@@ -77,10 +78,7 @@ export function FilterableTasks({ tasks, goals }: FilterableTasksProps) {
     });
   };
 
-  console.log(tasks);
-  tasks = tasks.filter(
-    (task) => selectedGoals.includes(task.goal) || task.goal === "unspecified",
-  );
+  tasks = tasks.filter((task) => selectedGoals.includes(task.goal));
 
   const total = tasks.length;
 

@@ -49,17 +49,21 @@ export function Task({ task }: TaskProps) {
     api.tasks.markCompleted({ id: task.id }),
   );
 
+  const steps = task.steps.split("\n").filter((s) => s);
+
   return (
     <section className={styles["task"]}>
       <div data-task-status={task.status} className={styles["task__title"]}>
         {task.title}
       </div>
       <ol className={styles["task__steps"]}>
-        {task.steps.split("\n").map((step, idx) => (
-          <li key={idx} className={styles["task__step"]}>
-            {step}
-          </li>
-        ))}
+        {steps.length > 0
+          ? steps.map((step, idx) => (
+              <li key={idx} className={styles["task__step"]}>
+                {step}
+              </li>
+            ))
+          : ""}
       </ol>
       <div className={styles["action-bar"]}>
         {loading ? (
