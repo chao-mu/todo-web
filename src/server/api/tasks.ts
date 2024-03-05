@@ -83,7 +83,8 @@ export const deleteTask = protectedProcedure(
   async ({ session, input: { id } }) =>
     db
       .delete(tasks)
-      .where(and(eq(tasks.id, id), eq(tasks.userId, session.user.id))),
+      .where(and(eq(tasks.id, id), eq(tasks.userId, session.user.id)))
+      .then(() => true),
 );
 
 export const addGoal = protectedProcedure(
