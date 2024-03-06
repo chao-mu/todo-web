@@ -1,0 +1,17 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media print {
+  .action-row {
+    display: none;
+  }
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}

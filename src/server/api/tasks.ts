@@ -92,7 +92,7 @@ export const save = protectedProcedure(
       throw goalSaveRes;
     }
 
-    addGoal({ taskId: task.id, goalId: goalSaveRes.data.id });
+    await addGoal({ taskId: task.id, goalId: goalSaveRes.data.id });
 
     return { id: task.id };
   },

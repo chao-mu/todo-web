@@ -11,7 +11,7 @@ import { goals } from "@/db/schema";
 import { db } from "@/db/db";
 
 // Ours - API
-import { APIError, protectedProcedure, noArgs } from "./shared";
+import { protectedProcedure, noArgs } from "./shared";
 
 export const saveByTitle = protectedProcedure(
   z.object({ title: z.string() }),

@@ -8,7 +8,7 @@ import styles from "./layout.module.css";
 import { SiteNav } from "@/components/SiteNav";
 
 // Ours - Auth
-import { getServerSession } from "@/server/auth";
+import { getServerSession } from "@/server/session";
 
 export default async function UserLayout({
   children,

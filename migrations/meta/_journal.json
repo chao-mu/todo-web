@@ -15,6 +15,13 @@
       "when": 1709661700591,
       "tag": "0001_orange_paper_doll",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1709678832573,
+      "tag": "0002_pretty_kylun",
+      "breakpoints": true
     }
   ]
 }

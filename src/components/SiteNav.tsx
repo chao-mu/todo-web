@@ -43,6 +43,9 @@ export function SiteNav() {
         <NavLinkItem to="/user/tasks/new" currentPath={pathname}>
           New Task
         </NavLinkItem>
+        <NavLinkItem to="/user/schedules" currentPath={pathname}>
+          Schedules
+        </NavLinkItem>
       </ul>
     </nav>
   );

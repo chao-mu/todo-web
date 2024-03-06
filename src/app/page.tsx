@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 
 // Ours - Auth
-import { getServerSession } from "@/server/auth";
+import { getServerSession } from "@/server/session";
 
 import styles from "./page.module.css";
 

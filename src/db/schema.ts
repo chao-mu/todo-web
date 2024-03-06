@@ -66,6 +66,15 @@ export const verificationTokens = pgTable(
   }),
 );
 
+export const schedules = pgTable("schedule", {
+  id: serial("id").primaryKey(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+});
+
 export const tasks = pgTable("task", {
   id: serial("id").primaryKey(),
   userId: text("userId")

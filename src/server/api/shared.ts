@@ -5,7 +5,7 @@ import { z } from "zod";
 import type { Session } from "next-auth";
 
 // Ours
-import { getAuthenticatedSession } from "@/server/auth";
+import { getAuthenticatedSession } from "@/server/session";
 
 export type APIError = { error: string };
 export type APISuccess<T> = { data: T };

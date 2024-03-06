@@ -1,15 +1,12 @@
 feat: clear filters button
-feat: fix deps vulns
 feat: flash messages
-feat: make meaning of task contributions clearer
 feat: mark completed uncompleted
 feat: multiple goals
 feat: propper form validation
 feat: task sorting
 fix: deleted tasks included
-fix: progress bar does not clear on none selected
-fix: sometimes tasks not packed densely
 refactor: remove useAppData
 feat: typesafe env
-refactor: custom error types
-refactor: standardize add/create naming
+refactor: custom error typesfix: tasks not filtered out by goal
+refactor: create config module
+refactor: DRY up form styles
