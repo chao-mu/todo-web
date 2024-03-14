@@ -13,6 +13,7 @@ import { Progress } from "@/components/Progress";
 type GoalProgress = {
   total: number;
   completed: number;
+  points: number;
 };
 
 type GoalProgressLookup = Record<string, GoalProgress>;
@@ -24,18 +25,27 @@ export default async function Page() {
 
   const tasks = tasksRes.data;
 
+  const contributions = await api.goals.contributions({});
+  if ("error" in contributions) {
+    throw new Error(`Unable to retrieve goal contributions`);
+  }
+
   const progressByGoal: GoalProgressLookup = tasks.reduce(
     (acc, { goal, status, deleted }) => {
       if (deleted) {
         return acc;
       }
 
-      const progress = acc[goal] ?? { total: 0, completed: 0 };
+      const progress = acc[goal] ?? { total: 0, completed: 0, points: 0 };
 
       progress.total += 1;
       if (status === TaskStatus.Completed) {
         progress.completed += 1;
       }
+
+      const points =
+        contributions.data.filter((c) => goal == c.title).length * 3;
+      progress.points = points;
 
       return {
         ...acc,
@@ -55,7 +65,7 @@ export default async function Page() {
         <h2>Progress</h2>
         <div className={styles["goals"]}>
           {Object.entries(progressByGoal).map(
-            ([goal, { total, completed }]) => (
+            ([goal, { total, completed, points }]) => (
               <>
                 <div key={`title_${goal}`} className={styles["goal__title"]}>
                   {goal}
@@ -66,6 +76,7 @@ export default async function Page() {
                 >
                   <Progress current={completed} total={total} />
                 </div>
+                <div>Points: {points}</div>
               </>
             ),
           )}

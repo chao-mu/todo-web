@@ -22,6 +22,6 @@
 
 .goals {
   display: grid;
-  grid-template-columns: max-content 1fr;
+  grid-template-columns: max-content 1fr auto;
   gap: 1rem;
 }

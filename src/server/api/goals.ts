@@ -4,10 +4,10 @@
 import { z } from "zod";
 
 // Drizzle
-import { eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 
 // Ours - DB
-import { goals } from "@/db/schema";
+import { goalContributions, goals, users } from "@/db/schema";
 import { db } from "@/db/db";
 
 // Ours - API
@@ -37,4 +37,15 @@ export const all = protectedProcedure(noArgs, async ({ session }) => {
     .select({ title: goals.title, id: goals.id })
     .from(goals)
     .where(eq(goals.userId, userId));
+});
+
+export const contributions = protectedProcedure(noArgs, async ({ session }) => {
+  const userId = session.user.id;
+
+  return db
+    .select({ title: goals.title, goalId: goals.id, count: count() })
+    .from(goalContributions)
+    .innerJoin(goals, eq(goals.id, goalContributions.goalId))
+    .where(eq(goals.userId, userId))
+    .groupBy(goals.title, goals.id);
 });

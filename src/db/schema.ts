@@ -102,6 +102,19 @@ export const goals = pgTable(
   }),
 );
 
+export const goalContributions = pgTable("goal_contributions", {
+  id: serial("id").primaryKey(),
+  occurredAt: timestamp("occured_at").notNull(),
+  taskId: integer("taskId")
+    .notNull()
+    .references(() => tasks.id),
+  goalId: integer("goalId")
+    .notNull()
+    .references(() => goals.id),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id),
+});
 export const tasksGoals = pgTable(
   "task_goal",
   {

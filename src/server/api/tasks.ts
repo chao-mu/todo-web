@@ -7,7 +7,7 @@ import { z } from "zod";
 import { and, eq } from "drizzle-orm";
 
 // Ours - DB
-import { goals, tasks, tasksGoals } from "@/db/schema";
+import { goalContributions, goals, tasks, tasksGoals } from "@/db/schema";
 import { db } from "@/db/db";
 
 // Ours - API
@@ -43,12 +43,35 @@ export const all = protectedProcedure(noArgs, async ({ session }) => {
 
 export const markCompleted = protectedProcedure(
   z.object({ id: z.number() }),
-  async ({ session, input: { id } }) =>
-    db
-      .update(tasks)
-      .set({ status: TaskStatus.Completed })
-      .where(and(eq(tasks.id, id), eq(tasks.userId, session.user.id)))
-      .then(() => true),
+  async ({ session, input: { id } }) => {
+    const userId = session.user.id;
+
+    const [task] = await db.select().from(tasks).where(eq(tasks.id, id));
+    if (task === undefined) {
+      throw { error: "Task not found" };
+    }
+
+    if (task.repeatable) {
+      const goals = await db
+        .select({ id: tasksGoals.goalId })
+        .from(tasksGoals)
+        .where(eq(tasksGoals.taskId, id));
+      for (const goal of goals) {
+        await db.insert(goalContributions).values({
+          userId,
+          taskId: id,
+          goalId: goal.id,
+          occurredAt: new Date(),
+        });
+      }
+    } else {
+      await db
+        .update(tasks)
+        .set({ status: TaskStatus.Completed })
+        .where(and(eq(tasks.id, id), eq(tasks.userId, userId)))
+        .then(() => true);
+    }
+  },
 );
 
 export const save = protectedProcedure(
