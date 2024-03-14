@@ -6,7 +6,7 @@
 
 @media print {
   .action-row {
-    display: none;
+    display: none !important;
   }
 }
 
