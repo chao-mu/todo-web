@@ -1,7 +1,7 @@
 "use client";
 
 // React
-import { ReactNode, useState } from "react";
+import { type ReactNode, useState } from "react";
 
 // React Hook Form
 import { useForm } from "react-hook-form";
