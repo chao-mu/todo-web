@@ -14,7 +14,7 @@ type ScheduleGridProps = {
 };
 
 export function ScheduleGrid({ title, content }: ScheduleGridProps) {
-  const tasks = content.split("\n");
+  const tasks = content.trim().split("\n");
 
   return (
     <section className={styles["schedule"]}>
