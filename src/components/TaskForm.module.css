@@ -33,12 +33,12 @@
   padding: 0.25rem;
 }
 
-.form__ongoing {
+.form__repeatable {
   display: flex;;
   gap: var(--spacing-sm);
 }
 
-.form__ongoing input[type=checkbox] {
+.form__repeatable input[type=checkbox] {
   transform: scale(1.5);
 }
 

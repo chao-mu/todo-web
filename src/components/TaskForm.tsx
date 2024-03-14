@@ -23,7 +23,7 @@ type FormValues = {
   title: string;
   goal: string;
   steps: string;
-  ongoing: boolean;
+  repeatable: boolean;
 };
 
 export type NewTaskPopupButtonProps = {
@@ -73,7 +73,7 @@ export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
       title: task?.title,
       goal: task?.goal,
       steps: task?.steps,
-      ongoing: task?.ongoing ?? false,
+      repeatable: task?.repeatable ?? false,
     },
   });
 
@@ -138,9 +138,9 @@ export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
         {...register("steps")}
         className={styles["form__steps"]}
       />
-      <label htmlFor="ongoing" className={styles["form__ongoing"]}>
+      <label htmlFor="repeatable" className={styles["form__repeatable"]}>
         Repeatable?
-        <input type="checkbox" {...register("ongoing")} />
+        <input type="checkbox" {...register("repeatable")} />
       </label>
       <p className={styles["form__root-error"]}>{error}</p>
       {loading ? (

@@ -26,7 +26,7 @@ export const all = protectedProcedure(noArgs, async ({ session }) => {
       steps: tasks.steps,
       userId: tasks.userId,
       deleted: tasks.deleted,
-      ongoing: tasks.ongoing,
+      repeatable: tasks.repeatable,
       goal: goals.title,
     })
     .from(tasks)
@@ -59,7 +59,7 @@ export const save = protectedProcedure(
         title: z.string(),
         goal: z.string(),
         steps: z.string(),
-        ongoing: z.boolean(),
+        repeatable: z.boolean(),
       })
       .strict(),
   }),
@@ -69,7 +69,7 @@ export const save = protectedProcedure(
     const taskValues = {
       title: task.title,
       steps: task.steps,
-      ongoing: task.ongoing,
+      repeatable: task.repeatable,
     };
 
     if (task.id) {

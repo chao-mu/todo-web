@@ -70,7 +70,7 @@ export function Task({ task }: TaskProps) {
           "Loading..."
         ) : (
           <>
-            {task.ongoing && (
+            {task.repeatable && (
               <button
                 className={styles["action-bar__button"]}
                 onClick={() => markComplete()}
