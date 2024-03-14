@@ -22,6 +22,20 @@
       "when": 1709678832573,
       "tag": "0002_pretty_kylun",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1710436102031,
+      "tag": "0003_outstanding_loki",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1710438634663,
+      "tag": "0004_volatile_yellowjacket",
+      "breakpoints": true
     }
   ]
 }

@@ -70,12 +70,14 @@ export function Task({ task }: TaskProps) {
           "Loading..."
         ) : (
           <>
-            <button
-              className={styles["action-bar__button"]}
-              onClick={() => markComplete()}
-            >
-              Complete
-            </button>
+            {task.ongoing && (
+              <button
+                className={styles["action-bar__button"]}
+                onClick={() => markComplete()}
+              >
+                Complete
+              </button>
+            )}
             <button
               className={styles["action-bar__button"]}
               onClick={() => setShowEdit(true)}

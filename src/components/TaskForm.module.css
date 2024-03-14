@@ -33,6 +33,15 @@
   padding: 0.25rem;
 }
 
+.form__ongoing {
+  display: flex;;
+  gap: var(--spacing-sm);
+}
+
+.form__ongoing input[type=checkbox] {
+  transform: scale(1.5);
+}
+
 .form__buttons {
   grid-column: 1 / -1;
   justify-self: end;

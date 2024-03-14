@@ -1,0 +1,1 @@
+ALTER TABLE "task" RENAME COLUMN "is_ongoing" TO "ongoing";

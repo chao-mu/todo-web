@@ -26,6 +26,7 @@ export const all = protectedProcedure(noArgs, async ({ session }) => {
       steps: tasks.steps,
       userId: tasks.userId,
       deleted: tasks.deleted,
+      ongoing: tasks.ongoing,
       goal: goals.title,
     })
     .from(tasks)
@@ -58,22 +59,29 @@ export const save = protectedProcedure(
         title: z.string(),
         goal: z.string(),
         steps: z.string(),
+        ongoing: z.boolean(),
       })
       .strict(),
   }),
   async ({ session, input: { task } }): Promise<{ id: number }> => {
     const userId = session.user.id;
 
+    const taskValues = {
+      title: task.title,
+      steps: task.steps,
+      ongoing: task.ongoing,
+    };
+
     if (task.id) {
       await db
         .update(tasks)
-        .set({ title: task.title, steps: task.steps })
+        .set(taskValues)
         .where(and(eq(tasks.id, task.id), eq(tasks.userId, userId)));
     } else {
       const res = await db
         .insert(tasks)
         .values({
-          ...task,
+          ...taskValues,
           userId,
         })
         .returning({ id: tasks.id });

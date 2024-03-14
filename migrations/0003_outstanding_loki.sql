@@ -1,0 +1,1 @@
+ALTER TABLE "task" ADD COLUMN "is_ongoing" boolean DEFAULT false NOT NULL;

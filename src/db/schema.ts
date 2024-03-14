@@ -83,6 +83,7 @@ export const tasks = pgTable("task", {
   title: text("name").notNull(),
   steps: text("steps").notNull().default(""),
   status: taskStatusEnum("status").notNull().default("PENDING"),
+  ongoing: boolean("ongoing").notNull().default(false),
   deleted: boolean("deleted").notNull().default(false),
 });
 
