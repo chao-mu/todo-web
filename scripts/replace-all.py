@@ -14,7 +14,6 @@ INDENT = " " * 4
 
 
 def replace_inplace(path, regex, replacement, write):
-    print(f"### {path} ###")
     loglines = []
     for line in fileinput.input(path, inplace=1):
         line = line.rstrip("\n")
@@ -29,8 +28,11 @@ def replace_inplace(path, regex, replacement, write):
                 continue
         print(line)
 
-    for line in loglines:
-        print(line)
+    if loglines:
+        print(f"### {path} ###")
+        for line in loglines:
+            print(line)
+        print()
 
 
 @click.command()
