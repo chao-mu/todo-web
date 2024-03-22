@@ -7,7 +7,7 @@ import { z } from "zod";
 import { and, count, eq } from "drizzle-orm";
 
 // Ours - DB
-import { goalContributions, goals, users } from "@/db/schema";
+import { goalContributions, goals, tasks, tasksGoals } from "@/db/schema";
 import { db } from "@/db/db";
 
 // Ours - API
@@ -29,6 +29,46 @@ export const saveByTitle = protectedProcedure(
     return res[0];
   },
 );
+
+export const progress = protectedProcedure(noArgs, async ({ session }) => {
+  const userId = session.user.id;
+
+  const progressRows = await db
+    .select({
+      goal: goals.title,
+      taskStatus: tasks.status,
+      points: count(goalContributions.id),
+      total: count(tasks.id),
+    })
+    .from(goals)
+    .leftJoin(goalContributions, eq(goalContributions.goalId, goals.id))
+    .innerJoin(tasksGoals, eq(tasksGoals.goalId, goals.id))
+    .innerJoin(tasks, eq(tasks.id, tasksGoals.taskId))
+    .where(and(eq(goals.userId, userId), eq(tasks.deleted, false)))
+    .groupBy(goals.title, tasks.status);
+
+  return progressRows.reduce(
+    (acc, { goal, taskStatus, points, total }) => {
+      const progress = acc[goal] ?? {
+        total: 0,
+        completed: 0,
+        points: 0,
+      };
+
+      progress.points += points;
+      progress.total += total;
+      if (taskStatus == "COMPLETED") {
+        progress.completed += total;
+      }
+
+      return {
+        ...acc,
+        [goal]: progress,
+      };
+    },
+    {} as Record<string, { total: number; completed: number; points: number }>,
+  );
+});
 
 export const all = protectedProcedure(noArgs, async ({ session }) => {
   const userId = session.user.id;

@@ -3,10 +3,13 @@ feat: flash messages
 feat: mark completed uncompleted
 feat: multiple goals
 feat: propper form validation
+feat: task pulsing
 feat: task sorting
-fix: deleted tasks included
-refactor: remove useAppData
 feat: typesafe env
-refactor: custom error typesfix: tasks not filtered out by goal
+fix: deleted tasks included
+refactor: DRY up form stylesfeat: on-going tasks
 refactor: create config module
-refactor: DRY up form styles
+refactor: custom error typesfix: tasks not filtered out by goal
+refactor: delete -> retire
+refactor: remove useAppDatafix: api args are not strict by defaultfix: filters have inconsistent order
+refactor: replace manual calculation of progress

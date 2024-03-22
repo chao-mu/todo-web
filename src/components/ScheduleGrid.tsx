@@ -6,7 +6,7 @@ import { Fragment } from "react";
 // Ours - Styles
 import styles from "./ScheduleGrid.module.css";
 
-const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const days = ["Thu", "Fri", "Sat", "Sun", "Mon", "Tue", "Wed"];
 
 type ScheduleGridProps = {
   title: string;
