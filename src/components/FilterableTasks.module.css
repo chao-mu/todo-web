@@ -14,3 +14,7 @@
 .goals__filter input[type="checkbox"] {
   transform: scale(1.5);
 }
+
+.tasks {
+  align-self: stretch;
+}
