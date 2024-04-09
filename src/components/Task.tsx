@@ -65,6 +65,9 @@ export function Task({ task }: TaskProps) {
             ))
           : ""}
       </ol>
+      <div className={styles["task__success-criteria"]}>
+        {task.successCriteria}
+      </div>
       <div className={styles["action-bar"]}>
         {loading ? (
           "Loading..."

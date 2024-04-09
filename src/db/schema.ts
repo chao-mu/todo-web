@@ -82,6 +82,7 @@ export const tasks = pgTable("task", {
     .references(() => users.id),
   title: text("name").notNull(),
   steps: text("steps").notNull().default(""),
+  successCriteria: text("success_criteria").notNull().default(""),
   status: taskStatusEnum("status").notNull().default("PENDING"),
   repeatable: boolean("repeatable").notNull().default(false),
   deleted: boolean("deleted").notNull().default(false),

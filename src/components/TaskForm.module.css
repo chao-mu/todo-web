@@ -1,19 +1,33 @@
 .form {
   --error-color: #f00;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.form__title,
-.form__goal {
-  grid-row: 1;
-  padding: 0.25rem;
+.form__field-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.form__field-group .form__field {
+  flex-grow: 1;
+}
+
+.form__field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form input, .form textarea {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
 }
 
 .form__error {
   color: var(--error-color);
-  margin-bottom: 1rem;
+  margin: 0.125rem 0;
 }
 
 .form__error[for="title"] {
@@ -27,6 +41,7 @@
 }
 
 .form__steps,
+.form__success-criteria,
 .form__contributions {
   grid-column: 1 / -1;
   height: 10rem;
@@ -46,11 +61,12 @@
   grid-column: 1 / -1;
   justify-self: end;
   display: flex;
-  column-gap: 0.25rem;
+  column-gap: 0.5rem;
 }
 
 .form__button {
   padding: 0.25rem 0.5rem;
+  border-radius: 0.125rem;
 }
 
 .form__root-error {

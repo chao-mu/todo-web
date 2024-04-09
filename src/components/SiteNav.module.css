@@ -5,6 +5,7 @@
 }
 .nav > ul {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-md);
   list-style: none;
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "task" ADD COLUMN "success_criteria" text DEFAULT '' NOT NULL;

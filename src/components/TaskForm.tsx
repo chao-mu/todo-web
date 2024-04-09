@@ -23,6 +23,7 @@ type FormValues = {
   title: string;
   goal: string;
   steps: string;
+  successCriteria: string;
   repeatable: boolean;
 };
 
@@ -73,6 +74,7 @@ export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
       title: task?.title,
       goal: task?.goal,
       steps: task?.steps,
+      successCriteria: task?.successCriteria,
       repeatable: task?.repeatable ?? false,
     },
   });
@@ -119,24 +121,35 @@ export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
 
   return (
     <form onSubmit={onSubmit} className={styles["form"]}>
-      <input
-        type="text"
-        placeholder="New task"
-        className={styles["form__title"]}
-        {...register("title", { required: true })}
-      />
-      <ErrorLabel htmlFor="title" />
-      <input
-        type="text"
-        placeholder="Goal"
-        className={styles["form__goal"]}
-        {...register("goal", { required: true })}
-      />
-      <ErrorLabel htmlFor="goal" />
+      <div className={styles["form__field-group"]}>
+        <div className={styles["form__field"]}>
+          <input
+            type="text"
+            placeholder="New task"
+            className={styles["form__title"]}
+            {...register("title", { required: true })}
+          />
+          <ErrorLabel htmlFor="title" />
+        </div>
+        <div className={styles["form__field"]}>
+          <input
+            type="text"
+            placeholder="Goal"
+            className={styles["form__goal"]}
+            {...register("goal", { required: true })}
+          />
+          <ErrorLabel htmlFor="goal" />
+        </div>
+      </div>
       <textarea
         placeholder="Steps"
         {...register("steps")}
         className={styles["form__steps"]}
+      />
+      <textarea
+        placeholder="Success Criteria"
+        {...register("successCriteria")}
+        className={styles["form__success-criteria"]}
       />
       <label htmlFor="repeatable" className={styles["form__repeatable"]}>
         Repeatable?

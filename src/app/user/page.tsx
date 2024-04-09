@@ -4,9 +4,6 @@ import styles from "./page.module.css";
 // Ours - API
 import { api } from "@/server/api";
 
-// Ours - Types
-import { TaskStatus } from "@/types";
-
 // Ours - Components
 import { Progress } from "@/components/Progress";
 
@@ -18,8 +15,6 @@ type GoalProgress = {
 
 type GoalProgressLookup = Record<string, GoalProgress>;
 export default async function Page() {
-  const allGoal = "Totals";
-
   const res = await api.goals.progress({});
   if ("error" in res) {
     throw new Error(`Unable to retrieve goal progress: ${res.error}`);
