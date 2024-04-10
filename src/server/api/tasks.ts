@@ -42,14 +42,44 @@ export const all = protectedProcedure(noArgs, async ({ session }) => {
     );
 });
 
+export const get = protectedProcedure(
+  z.object({ id: z.number() }),
+  async ({ session, input: { id } }) => {
+    const userId = session.user.id;
+
+    const [task] = await db
+      .select()
+      .from(tasks)
+      .where(and(eq(tasks.id, id), eq(tasks.userId, userId)));
+    if (task === undefined) {
+      return { task: null };
+    }
+
+    return {
+      task: {
+        ...task,
+        goal: "[missing]",
+      },
+    };
+  },
+);
+
 export const markCompleted = protectedProcedure(
   z.object({ id: z.number() }),
   async ({ session, input: { id } }) => {
     const userId = session.user.id;
 
-    const [task] = await db.select().from(tasks).where(eq(tasks.id, id));
-    if (task === undefined) {
-      throw { error: "Task not found" };
+    const getRes = await get({ id });
+    if (isAPIError(getRes)) {
+      return getRes;
+    }
+
+    const {
+      data: { task },
+    } = getRes;
+
+    if (task === null) {
+      return { error: "Task not found" };
     }
 
     if (task.repeatable) {

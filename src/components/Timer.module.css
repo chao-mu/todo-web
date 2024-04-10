@@ -1,0 +1,24 @@
+.timer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.timer__time {
+  font-size: var(--font-size-lg);
+}
+
+.timer__action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.timer__action-row > button {
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+}
+
+

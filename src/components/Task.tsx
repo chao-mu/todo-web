@@ -16,6 +16,7 @@ import type { PersistedTask } from "@/types";
 
 // Ours - Styles
 import styles from "./Task.module.css";
+import Link from "next/link";
 
 type TaskProps = {
   task: PersistedTask;
@@ -35,6 +36,7 @@ export function Task({ task }: TaskProps) {
       if ("error" in result) {
         setError(`Error ${action}: ${error}`);
       } else {
+        router.push("/user/tasks");
         router.refresh();
       }
 
@@ -54,7 +56,7 @@ export function Task({ task }: TaskProps) {
   return (
     <section className={styles["task"]}>
       <div data-task-status={task.status} className={styles["task__title"]}>
-        {task.title}
+        <Link href={`/user/tasks/${task.id}`}>{task.title}</Link>
       </div>
       <ol className={styles["task__steps"]}>
         {steps.length > 0
