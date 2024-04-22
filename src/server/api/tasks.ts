@@ -4,7 +4,7 @@
 import { z } from "zod";
 
 // Drizzle
-import { and, eq } from "drizzle-orm";
+import { and, eq, not } from "drizzle-orm";
 
 // Ours - DB
 import { goalContributions, goals, tasks, tasksGoals } from "@/db/schema";
@@ -15,31 +15,77 @@ import { protectedProcedure, noArgs, isAPIError } from "./shared";
 import * as goalsAPI from "./goals";
 import { TaskStatus } from "@/types";
 
+const taskRowFields = {
+  id: tasks.id,
+  title: tasks.title,
+  status: tasks.status,
+  steps: tasks.steps,
+  successCriteria: tasks.successCriteria,
+  userId: tasks.userId,
+  deleted: tasks.deleted,
+  repeatable: tasks.repeatable,
+  goal: goals.title,
+};
+
+function groupTasks<T extends { id: number; goal: string | null }>(rows: T[]) {
+  const tasksById = rows.reduce(
+    (acc, row) => {
+      const goal = (row.goal ?? "[[missing]]").trim().replaceAll(/\s+/g, " ");
+      if (!acc[row.id]) {
+        acc[row.id] = { ...row, goals: [] };
+      }
+
+      const goals = acc[row.id]!.goals;
+      if (!goals.includes(goal)) {
+        goals.push(goal);
+      }
+
+      return acc;
+    },
+    {} as Record<number, Omit<T, "goal"> & { goals: string[] }>,
+  );
+
+  return Object.values(tasksById);
+}
+
 export const all = protectedProcedure(noArgs, async ({ session }) => {
   const userId = session.user.id;
 
-  return db
-    .select({
-      id: tasks.id,
-      title: tasks.title,
-      status: tasks.status,
-      steps: tasks.steps,
-      successCriteria: tasks.successCriteria,
-      userId: tasks.userId,
-      deleted: tasks.deleted,
-      repeatable: tasks.repeatable,
-      goal: goals.title,
-    })
+  const rows = await db
+    .select(taskRowFields)
     .from(tasks)
     .leftJoin(tasksGoals, eq(tasksGoals.taskId, tasks.id))
     .leftJoin(goals, eq(goals.id, tasksGoals.goalId))
-    .where(and(eq(tasks.userId, userId)))
-    .then((rows) =>
-      rows.map((row) => ({
-        ...row,
-        goal: row.goal ?? "unspecified",
-      })),
+    .where(
+      and(
+        eq(tasks.userId, userId),
+        not(tasks.deleted),
+        not(eq(tasks.status, TaskStatus.Completed)),
+      ),
     );
+
+  const tasksById = rows.reduce(
+    (acc, row) => {
+      const goal = (row.goal ?? "[[missing]]").trim().replaceAll(/\s+/g, " ");
+      if (!acc[row.id]) {
+        row.goal = null;
+        acc[row.id] = { ...row, goals: [] };
+      }
+
+      const goals = acc[row.id]!.goals;
+      if (!goals.includes(goal)) {
+        goals.push(goal);
+      }
+
+      return acc;
+    },
+    {} as Record<
+      number,
+      Omit<(typeof rows)[number], "goal"> & { goals: string[] }
+    >,
+  );
+
+  return Object.values(tasksById);
 });
 
 export const get = protectedProcedure(
@@ -47,19 +93,20 @@ export const get = protectedProcedure(
   async ({ session, input: { id } }) => {
     const userId = session.user.id;
 
-    const [task] = await db
-      .select()
+    const rows = await db
+      .select(taskRowFields)
       .from(tasks)
+      .leftJoin(tasksGoals, eq(tasksGoals.taskId, tasks.id))
+      .leftJoin(goals, eq(goals.id, tasksGoals.goalId))
       .where(and(eq(tasks.id, id), eq(tasks.userId, userId)));
-    if (task === undefined) {
+    if (rows.length == 0) {
       return { task: null };
     }
 
+    const [task] = groupTasks(rows);
+
     return {
-      task: {
-        ...task,
-        goal: "[missing]",
-      },
+      task: task,
     };
   },
 );
@@ -78,7 +125,7 @@ export const markCompleted = protectedProcedure(
       data: { task },
     } = getRes;
 
-    if (task === null) {
+    if (!task) {
       return { error: "Task not found" };
     }
 
@@ -111,7 +158,7 @@ export const save = protectedProcedure(
       .object({
         id: z.number().optional(),
         title: z.string(),
-        goal: z.string(),
+        goals: z.array(z.string()),
         steps: z.string(),
         successCriteria: z.string(),
         repeatable: z.boolean(),
@@ -151,12 +198,14 @@ export const save = protectedProcedure(
       task.id = res[0].id;
     }
 
-    const goalSaveRes = await goalsAPI.saveByTitle({ title: task.goal });
-    if (isAPIError(goalSaveRes)) {
-      throw goalSaveRes;
-    }
+    for (const goal of task.goals) {
+      const goalSaveRes = await goalsAPI.saveByTitle({ title: goal });
+      if (isAPIError(goalSaveRes)) {
+        throw goalSaveRes;
+      }
 
-    await addGoal({ taskId: task.id, goalId: goalSaveRes.data.id });
+      await addGoal({ taskId: task.id, goalId: goalSaveRes.data.id });
+    }
 
     return { id: task.id };
   },

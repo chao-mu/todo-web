@@ -1,18 +1,19 @@
 feat: clear filters button
+feat: cookwork room landing page
+feat: cowork room
+feat: cowork rooms
+feat: db backing for work rooms
 feat: export bulk
 feat: flash messages
 feat: import bulk
 feat: mark completed uncompleted
-feat: multiple goals
 feat: propper form validation
 feat: task sorting
 feat: typesafe env
 fix(ui): extra space after buttons
 fix: deleted tasks included
-fix: duplicate tasks if multiple goals
 refactor: DRY up form stylesfeat: on-going tasks
 refactor: create config module
-refactor: custom error typesfix: tasks not filtered out by goal
 refactor: delete -> retire
 refactor: remove useAppDatafix: api args are not strict by defaultfix: filters have inconsistent order
 refactor: replace manual calculation of progress

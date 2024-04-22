@@ -17,6 +17,9 @@ export const saveByTitle = protectedProcedure(
   z.object({ title: z.string() }),
   async ({ session, input: { title } }): Promise<{ id: number }> => {
     const userId = session.user.id;
+
+    title = title.trim().replaceAll(/\s+/g, " ");
+
     await db.insert(goals).values({ userId, title }).onConflictDoNothing();
     const res = await db
       .select({ id: goals.id })

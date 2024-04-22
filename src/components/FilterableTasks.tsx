@@ -40,7 +40,7 @@ export type FilterableTasksProps = {
 
 export function FilterableTasks({ tasks }: FilterableTasksProps) {
   const allGoalKey = useId();
-  const goals = [...new Set(tasks.map((task) => task.goal))];
+  const goals = [...new Set(tasks.flatMap((task) => task.goals))];
 
   tasks = tasks.filter(({ deleted }) => !deleted);
 
@@ -77,7 +77,9 @@ export function FilterableTasks({ tasks }: FilterableTasksProps) {
     });
   };
 
-  tasks = tasks.filter((task) => selectedGoals.includes(task.goal));
+  tasks = tasks.filter((task) =>
+    selectedGoals.some((goal) => task.goals.includes(goal)),
+  );
 
   const total = tasks.length;
 

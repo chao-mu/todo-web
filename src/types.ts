@@ -5,5 +5,5 @@ export enum TaskStatus {
   Completed = "COMPLETED",
 }
 
-export type PersistedTask = typeof tasks.$inferSelect & { goal: string };
+export type PersistedTask = typeof tasks.$inferSelect & { goals: string[] };
 export type Task = Omit<PersistedTask, "id">;

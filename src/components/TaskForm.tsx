@@ -17,18 +17,19 @@ import styles from "./TaskForm.module.css";
 
 // Ours - API
 import { api } from "@/server/api";
+import { type PersistedTask } from "@/types";
 
 type FormValues = {
   id?: number;
   title: string;
-  goal: string;
+  goals: string;
   steps: string;
   successCriteria: string;
   repeatable: boolean;
 };
 
 export type NewTaskPopupButtonProps = {
-  task: FormValues;
+  task: PersistedTask;
 };
 
 export function NewTaskPopupButton({ task }: NewTaskPopupButtonProps) {
@@ -54,7 +55,7 @@ export function NewTaskPopupButton({ task }: NewTaskPopupButtonProps) {
 }
 
 export type TaskFormProps = {
-  task?: FormValues;
+  task?: PersistedTask;
   onCancel?: () => void;
   onSuccess?: () => void;
 };
@@ -72,7 +73,7 @@ export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
     defaultValues: {
       id: task?.id,
       title: task?.title,
-      goal: task?.goal,
+      goals: task?.goals.join(", "),
       steps: task?.steps,
       successCriteria: task?.successCriteria,
       repeatable: task?.repeatable ?? false,
@@ -94,7 +95,11 @@ export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
 
     setLoading(true);
 
-    const saveResult = await api.tasks.save({ task });
+    const saveableTask = {
+      ...task,
+      goals: task.goals.split(","),
+    };
+    const saveResult = await api.tasks.save({ task: saveableTask });
 
     if ("error" in saveResult) {
       setError(saveResult.error);
@@ -136,9 +141,9 @@ export function TaskForm({ task, onCancel, onSuccess }: TaskFormProps) {
             type="text"
             placeholder="Goal"
             className={styles["form__goal"]}
-            {...register("goal", { required: true })}
+            {...register("goals", { required: true })}
           />
-          <ErrorLabel htmlFor="goal" />
+          <ErrorLabel htmlFor="goals" />
         </div>
       </div>
       <textarea
